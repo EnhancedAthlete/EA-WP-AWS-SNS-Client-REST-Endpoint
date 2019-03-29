@@ -1,0 +1,15 @@
+{
+  "headers": {},
+  "body": "<ConfirmSubscriptionResponse xmlns=\"http:\/\/sns.amazonaws.com\/doc\/2010-03-31\/\">\n  <ConfirmSubscriptionResult>\n    <SubscriptionArn>arn:aws:sns:us-east-1:112382221323:new_transcription_complete:81e0bd4f-9143-49cd-8fcb-745c44885cd0<\/SubscriptionArn>\n  <\/ConfirmSubscriptionResult>\n  <ResponseMetadata>\n    <RequestId>c4a7cfe1-95c3-54f4-ab0f-9af46b1651ef<\/RequestId>\n  <\/ResponseMetadata>\n<\/ConfirmSubscriptionResponse>\n",
+  "response": {
+    "code": 200,
+    "message": "OK"
+  },
+  "cookies": [],
+  "filename": null,
+  "http_response": {
+    "data": null,
+    "headers": null,
+    "status": null
+  }
+}

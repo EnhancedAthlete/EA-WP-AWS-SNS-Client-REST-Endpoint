@@ -1,0 +1,43 @@
+{
+  "headers": {
+    "accept_encoding": [
+      "gzip,deflate"
+    ],
+    "user_agent": [
+      "Amazon Simple Notification Service Agent"
+    ],
+    "connection": [
+      "Keep-Alive"
+    ],
+    "host": [
+      "anabolictv-staging.gv1md4q4-liquidwebsites.com"
+    ],
+    "content_type": [
+      "text\/plain; charset=UTF-8"
+    ],
+    "content_length": [
+      "1629"
+    ],
+    "x_amz_sns_topic_arn": [
+      "arn:aws:sns:us-east-1:112382221323:new_transcription_complete"
+    ],
+    "x_amz_sns_message_id": [
+      "88685c78-1e4b-4aab-be1c-5aa353b575dd"
+    ],
+    "x_amz_sns_message_type": [
+      "SubscriptionConfirmation"
+    ]
+  },
+  "body": {
+    "Type": "SubscriptionConfirmation",
+    "MessageId": "88685c78-1e4b-4aab-be1c-5aa353b575dd",
+    "Token": "2336412f37fb687f5d51e6e241dbca52ec0845de64a63a12839c5d8e7953c0bde092259e53d64184e4fece59732ed0b50d8a7f1fecfe55d513750c40a0e0647d7cd7cf03cdaa83484d7f9f928c6cd3db247178eae9281a4064bd4cfcdfefd60b8aa8541d086aa7b3ad69c0e2bdcffbd9dc221b86a29902aeeee14823e715f74f",
+    "TopicArn": "arn:aws:sns:us-east-1:112382221323:new_transcription_complete",
+    "Message": "You have chosen to subscribe to the topic arn:aws:sns:us-east-1:112382221323:new_transcription_complete.\nTo confirm the subscription, visit the SubscribeURL included in this message.",
+    "SubscribeURL": "https:\/\/sns.us-east-1.amazonaws.com\/?Action=ConfirmSubscription&TopicArn=arn:aws:sns:us-east-1:112382221323:new_transcription_complete&Token=2336412f37fb687f5d51e6e241dbca52ec0845de64a63a12839c5d8e7953c0bde092259e53d64184e4fece59732ed0b50d8a7f1fecfe55d513750c40a0e0647d7cd7cf03cdaa83484d7f9f928c6cd3db247178eae9281a4064bd4cfcdfefd60b8aa8541d086aa7b3ad69c0e2bdcffbd9dc221b86a29902aeeee14823e715f74f",
+    "Timestamp": "2019-03-13T22:28:29.810Z",
+    "SignatureVersion": "1",
+    "Signature": "edk9f\/OMHXA0AAWJnEhMollmzg0IzoEvhcOYJ9zxvf+ZgSCX0RLfLJLC3aoyD\/c15V6T+jBv2+huGyuu0oqHvGa8G0cLSPIDy0txHuAtRH\/PrtwUI2wWaX5I11o5IGIKtUj+hmQgRvXKdkzkfMQJbgL2IWxHxhFXflR6JlnkxGauVqeMqBGVcC8xxsQq1vyXLbPIMWsYnda1zEUZ2YAu6GdD+q4\/s6wjvZ\/aO9isR4eqj\/xTRH+maYcaHM1NtcjXw+0Ulyl0msosyKtmNrW5vfg1+cNF\/\/cZkJ34XpdcZp6t+YJ4nL8gyCVY0\/0uzV1ZVWuvHIc2gP\/i4bM2LoSX6g==",
+    "SigningCertURL": "https:\/\/sns.us-east-1.amazonaws.com\/SimpleNotificationService-6aad65c2f9911b05cd53efda11f913f9.pem"
+  }
+}

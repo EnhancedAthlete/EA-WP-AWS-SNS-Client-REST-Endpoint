@@ -1,0 +1,46 @@
+{
+  "headers": {
+    "accept_encoding": [
+      "gzip,deflate"
+    ],
+    "user_agent": [
+      "Amazon Simple Notification Service Agent"
+    ],
+    "connection": [
+      "Keep-Alive"
+    ],
+    "host": [
+      "anabolictv-staging.gv1md4q4-liquidwebsites.com"
+    ],
+    "content_type": [
+      "text\/plain; charset=UTF-8"
+    ],
+    "content_length": [
+      "1825"
+    ],
+    "x_amz_sns_subscription_arn": [
+      "arn:aws:sns:us-east-1:112382221323:new_transcription_complete:7f191918-71ca-454c-b19a-05d834e74e35"
+    ],
+    "x_amz_sns_topic_arn": [
+      "arn:aws:sns:us-east-1:112382221323:new_transcription_complete"
+    ],
+    "x_amz_sns_message_id": [
+      "8e64dd96-e4f9-51b8-98f3-88956d2ee5b0"
+    ],
+    "x_amz_sns_message_type": [
+      "Notification"
+    ]
+  },
+  "body": {
+    "Type": "Notification",
+    "MessageId": "8e64dd96-e4f9-51b8-98f3-88956d2ee5b0",
+    "TopicArn": "arn:aws:sns:us-east-1:112382221323:new_transcription_complete",
+    "Subject": "Amazon S3 Notification",
+    "Message": "{\"Records\":[{\"eventVersion\":\"2.1\",\"eventSource\":\"aws:s3\",\"awsRegion\":\"us-east-1\",\"eventTime\":\"2019-03-13T22:43:35.430Z\",\"eventName\":\"ObjectCreated:Put\",\"userIdentity\":{\"principalId\":\"AWS:AROAJKNQZEYTYXZUY7HR2:downloadFileToS3\"},\"requestParameters\":{\"sourceIPAddress\":\"54.209.250.211\"},\"responseElements\":{\"x-amz-request-id\":\"1B4822A692737467\",\"x-amz-id-2\":\"8y+y6ItUGGNipki\/P7ZpgW7oeFZwG4NQQJqT2FdC8UAkIYAy1Z1qXu8gv3fRIsMtgNw\/bqk7+ww=\"},\"s3\":{\"s3SchemaVersion\":\"1.0\",\"configurationId\":\"NewTranscription\",\"bucket\":{\"name\":\"video-ea-public\",\"ownerIdentity\":{\"principalId\":\"A18PYG3BV02B3W\"},\"arn\":\"arn:aws:s3:::video-ea-public\"},\"object\":{\"key\":\"deleteme2-bh-index.mp4.json\",\"size\":1613,\"eTag\":\"830fc983109dc0676cdbc98eaf37f96b\",\"sequencer\":\"005C8987975C82F03E\"}}}]}",
+    "Timestamp": "2019-03-13T22:43:35.525Z",
+    "SignatureVersion": "1",
+    "Signature": "JOXVfv3Y2QVXOE8Ykg5SjzP59Yzs5krA2QyFNjqUKU2xkF02tj3I7Xxx7ai+ePuvK\/iv3YliDRbtQNmzdbMr5JPQILMOCxElq05ETa0IeVCXnCM6YFh0S35AIUG3PhhrirC4IA5xfpekmA0D6ED1Fv5zK7vcXRn5rl56A8B8ktagb5Pgyvfh+n2imnvnTEsdbyeldWhxjQx6XMpg8oVh82s7KmJwfdncIzV3U3No3t7+zOYiyzFOLjfnnAGpjKlQm3GIJfz7aZQRw9wEWRjaZdnZmJGhs7YZQ+RKofrIKDzi7bjMmFcgU6UJygsd2t3ufzc\/NoYCiQkybcJ9rpHUvw==",
+    "SigningCertURL": "https:\/\/sns.us-east-1.amazonaws.com\/SimpleNotificationService-6aad65c2f9911b05cd53efda11f913f9.pem",
+    "UnsubscribeURL": "https:\/\/sns.us-east-1.amazonaws.com\/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:112382221323:new_transcription_complete:7f191918-71ca-454c-b19a-05d834e74e35"
+  }
+}
