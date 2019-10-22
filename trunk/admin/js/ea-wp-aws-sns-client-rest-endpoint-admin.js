@@ -14,7 +14,8 @@
 
 			var button = $( this );
 
-			$.ajax({url: ajaxurl,
+			$.ajax({
+				url: ajaxurl,
 				method: 'POST',
 				data: data,
 				success: function( response ) {
@@ -81,7 +82,6 @@
 				}
 			});
 		});
-
 
 	});
 

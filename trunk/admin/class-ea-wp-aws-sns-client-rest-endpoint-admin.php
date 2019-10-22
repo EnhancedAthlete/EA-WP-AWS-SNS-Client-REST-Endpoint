@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -36,12 +35,17 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Admin extends WPPB_Object {
 
 	}
 
+	/**
+	 * Checks for pending subscription notifications and displays them.
+	 *
+	 * Hooked on WordPress `admin_notices`.
+	 */
 	public function admin_notices() {
 
 		$admin_notices = $this->generate_admin_notices();
 
 		foreach ( $admin_notices as $admin_notice ) {
-			print( $admin_notice );
+			print( esc_html( $admin_notice ) );
 		}
 	}
 
@@ -49,7 +53,6 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Admin extends WPPB_Object {
 	 * Builds HTML for confirming/dismissing pending subscriptions.
 	 *
 	 * @return array
-	 * @throws Exception (DateTime)
 	 */
 	public function generate_admin_notices() {
 
@@ -59,58 +62,64 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Admin extends WPPB_Object {
 
 		$pending_subscriptions = get_option( $pending_subscriptions_option_key, array() );
 
-		if( 0 == count( $pending_subscriptions ) ) {
+		if ( 0 === count( $pending_subscriptions ) ) {
 			return $admin_notices;
 		}
 
-		$outer_css_class = 'notice notice-info is-dismissible';
-		$inner_css_class = 'message';
-		$wordpress_admin_date_format = get_option('date_format') . ', ' . get_option('time_format');
+		$outer_css_class             = 'notice notice-info is-dismissible';
+		$inner_css_class             = 'message';
+		$wordpress_admin_date_format = get_option( 'date_format' ) . ', ' . get_option( 'time_format' );
 
-		foreach( $pending_subscriptions as $subscription ) {
+		foreach ( $pending_subscriptions as $subscription ) {
+
+			global $wp;
+			$current_url = home_url( add_query_arg( $wp->query_vars, $wp->request ) );
 
 			// confirm url should get the current url and add the parameters to it?
-
 			$output_array = array();
-			preg_match('/.*wp-admin\/(.*)/', $_SERVER['REQUEST_URI'], $output_array);
+			preg_match( '/.*wp-admin\/(.*)/', $current_url, $output_array );
 
 			$current_url_tail = $output_array[1];
+
+			// TODO: Nonces.
 
 			$html_confirm_url = wp_nonce_url(
 				add_query_arg(
 					array(
-						'action' => 'ea_sns_confirm',
-						'subscription' => $subscription['message_id']
+						'action'       => 'ea_sns_confirm',
+						'subscription' => $subscription['message_id'],
 					),
-					admin_url( $current_url_tail  )
+					admin_url( $current_url_tail )
 				)
 			);
 
 			$html_dismiss_url = wp_nonce_url(
 				add_query_arg(
 					array(
-						'action' => 'ea_sns_dismiss',
-						'subscription' => $subscription['message_id']
+						'action'       => 'ea_sns_dismiss',
+						'subscription' => $subscription['message_id'],
 					),
 					admin_url( $current_url_tail )
 				)
 			);
 
-			// TODO: links expire after 3? days... so don't display them?
-
-			// 2019-03-13T22:28:29.810Z
-			$dateTime = new DateTime( $subscription['timestamp'] );
-
-			// TODO: UTC
-			$time = $dateTime->format( $wordpress_admin_date_format );
+			// TODO: subscription requests expire after three days, so check and discard. Maybe start a cron
+			// when they're received.
+			try {
+				$subscription_datetime = new DateTime( $subscription['timestamp'] );
+				// TODO: UTC -> timezones: 2019-03-13T22:28:29.810Z -> ???.
+				$time = $subscription_datetime->format( $wordpress_admin_date_format );
+			} catch ( Exception $e ) {
+				$time = $subscription['timestamp'];
+			}
 
 			$topic_arn = $subscription['topic_arn'];
 
-			// TODO: i18n
-			// TODO: The same id is being used on both dismiss link and confirm link
+			// TODO: i18n.
+			// TODO: The same id is being used on both dismiss link and confirm link.
 			$message = "AWS SNS topic <b><i>$topic_arn</i></b> subscription confirmation request received <i>$time</i>. <a class=\"ea-wp-sns-confirm\" id=\"$topic_arn\" href=\"$html_confirm_url\">Confirm subscription</a>. <a id=\"$topic_arn\" class=\"ea-wp-sns-dismiss\" href=\"$html_dismiss_url\">Dismiss</a>.";
 
-			$admin_notices[] = sprintf( '<div class="%1$s"><p class="%2$s">%3$s</p></div>', esc_attr( $outer_css_class ),  esc_attr( $inner_css_class ), $message );
+			$admin_notices[] = sprintf( '<div class="%1$s"><p class="%2$s">%3$s</p></div>', esc_attr( $outer_css_class ), esc_attr( $inner_css_class ), $message );
 		}
 
 		return $admin_notices;
@@ -118,17 +127,18 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Admin extends WPPB_Object {
 
 
 	/**
-	 * Add a link to AWS SNS console on the plugins list
+	 * Add a link to AWS SNS console on the plugins.php list.
 	 *
 	 * @see https://rudrastyh.com/wordpress/plugin_action_links-plugin_row_meta.html
 	 *
-	 * @param $links_array
+	 * @param array  $links_array      The existing plugin links (usually "Deactivate").
+	 * @param string $plugin_file_name The plugin filename to match when filtering.
 	 *
-	 * @return array
+	 * @return array The links to display below the plugin name on plugins.php.
 	 */
-	function plugin_action_links( $links_array, $plugin_file_name ){
+	public function plugin_action_links( $links_array, $plugin_file_name ) {
 
-		if( $this->plugin_name . '/' . $this->plugin_name . '.php' == $plugin_file_name ) {
+		if ( $this->plugin_name . '/' . $this->plugin_name . '.php' === $plugin_file_name ) {
 
 			array_unshift( $links_array, '<a target="_blank" href="https://console.aws.amazon.com/sns">AWS SNS Console</a>' );
 		}
@@ -138,30 +148,40 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Admin extends WPPB_Object {
 
 
 	/**
-	 * Add a link to EnhancedAthlete.com on the plugins list
+	 * Add a link to EnhancedAthlete.com on the plugins list.
 	 *
 	 * @see https://rudrastyh.com/wordpress/plugin_action_links-plugin_row_meta.html
 	 *
-	 * @param $links_array
+	 * @param string[] $plugin_meta The meta information/links displayed by the plugin description.
+	 * @param string   $plugin_file_name The plugin filename to match when filtering.
+	 * @param array    $plugin_data Associative array including PluginURI, slug, Author, Version.
+	 * @param string   $status The plugin status, e.g. 'Inactive'.
 	 *
-	 * @return array
+	 * @return array The filtered $plugin_meta.
 	 */
-	public function plugin_row_meta( $links_array, $plugin_file_name, $plugin_data, $status ) {
+	public function row_meta( $plugin_meta, $plugin_file_name, $plugin_data, $status ) {
 
-		if( $this->plugin_name . '/' . $this->plugin_name . '.php' == $plugin_file_name ) {
+		if ( $this->plugin_name . '/' . $this->plugin_name . '.php' === $plugin_file_name ) {
 
-			do_action( 'ea_log_debug', $this->plugin_name, $this->version, 'Adding SNS link to plugin list.', array( 'file'     => __FILE__,
-			                                                                                                         'class'    => __CLASS__,
-			                                                                                                         'function' => __FUNCTION__
-			) );
+			do_action(
+				'ea_log_debug',
+				$this->plugin_name,
+				$this->version,
+				'Adding SNS link to plugin list.',
+				array(
+					'file'     => __FILE__,
+					'class'    => __CLASS__,
+					'function' => __FUNCTION__,
+				)
+			);
 
-			foreach( $links_array as $index => $link ) {
-				$links_array[ $index ] = str_replace( 'Visit plugin site', 'View plugin on GitHub', $link );
+			foreach ( $plugin_meta as $index => $link ) {
+				$plugin_meta[ $index ] = str_replace( 'Visit plugin site', 'View plugin on GitHub', $link );
 			}
 
-			$links_array[] =  '<a target="_blank" href="https://enhancedathlete.com">Visit EnhancedAthlete.com</a>';
+			$plugin_meta[] = '<a target="_blank" href="https://enhancedathlete.com">Visit EnhancedAthlete.com</a>';
 		}
 
-		return $links_array;
+		return $plugin_meta;
 	}
 }

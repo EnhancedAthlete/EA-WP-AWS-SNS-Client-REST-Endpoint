@@ -1,7 +1,8 @@
 <?php
-
 /**
  * The REST API functionality of the plugin.
+ *
+ * Adds a wp-json/ea/v1/aws-sns REST endpoint.
  *
  * @link       https://BrianHenry.ie
  * @since      1.0.0
@@ -24,33 +25,34 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_REST extends WPPB_Object {
 	/**
 	 * Defines the REST endpoint itself. Added on WordPress `rest_api_init` action.
 	 */
+	public function rest_api_init() {
+
+		// TODO: add description so it explains itself with HEAD/GET /wp-json/.
+		register_rest_route(
+			'ea/v1',
+			'/aws-sns/',
+			array(
+				'methods'  => 'POST',
+				'callback' => array( $this, 'process_new_aws_sns_notification' ),
+			)
+		);
 	}
 
 	/**
+	 * Parse the REST request for the SNS notification.
 	 *
-	 */
-	function rest_api_init() {
-
-		// TODO: add description so it explains itself with GET /wp-json/
-
-		register_rest_route( 'ea/v1', '/aws-sns/', array(
-			'methods' => 'POST',
-			'callback' => array( $this, 'new_aws_sns_notification' ),
-		));
-	}
-
-	/**
+	 * @param WP_REST_Request $request The HTTP request received at our REST endpoint.
 	 *
+	 * @return bool
 	 */
-	function new_aws_sns_notification( WP_REST_Request $request ) {
+	public function process_new_aws_sns_notification( WP_REST_Request $request ) {
 
 		$headers = $request->get_headers();
 
-		if( !isset( $headers['x_amz_sns_message_type'] ) || !isset( $headers['x_amz_sns_topic_arn'] ) ) {
+		// If this is not an AWS SNS message.
+		if ( ! isset( $headers['x_amz_sns_message_type'] ) || ! isset( $headers['x_amz_sns_topic_arn'] ) ) {
 
-			// Not an AWS SNS message.
-
-			// TOOD: Add log context.
+			// TODO: Add log context.
 			do_action( 'ea_log_notice', $this->plugin_name, $this->version, 'Non AWS SNS message received.' );
 
 			return false;
@@ -61,21 +63,20 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_REST extends WPPB_Object {
 		do_action( 'ea_log_info', $this->plugin_name, $this->version, $headers['x_amz_sns_topic_arn'][0] . ' ' . $headers['x_amz_sns_message_type'][0] . ' received.' );
 
 		/**
-		 * The possible values are SubscriptionConfirmation, Notification, and UnsubscribeConfirmation.
+		 * The possible message type values are SubscriptionConfirmation, Notification, and UnsubscribeConfirmation.
 		 *
 		 * @see https://docs.aws.amazon.com/sns/latest/dg/sns-message-and-json-formats.html
 		 */
 		$message_type = $headers['x_amz_sns_message_type'][0];
 
-		switch( $message_type ) {
+		switch ( $message_type ) {
 			case 'SubscriptionConfirmation':
 				$this->handle_subscription_confirmation_request( $headers, $body );
 
 				return true;
-				break;
-			case 'UnsubscribeConfirmation':
 
-				// TODO
+			case 'UnsubscribeConfirmation':
+				$this->handle_unsubscribe_confirmation( $headers, $body );
 
 				break;
 			case 'Notification':
@@ -83,7 +84,6 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_REST extends WPPB_Object {
 
 				break;
 			default:
-
 				do_action( 'ea_log_notice', $this->plugin_name, $this->version, 'Unexpected message type received: ' . $message_type );
 
 				return false;
@@ -95,20 +95,21 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_REST extends WPPB_Object {
 	/**
 	 * Stores the subscription request in WordPress options for later display in the admin UI.
 	 *
-	 * @param $headers
-	 * @param $body
+	 * @param array  $headers  The HTTP headers received from AWS SNS.
+	 * @param object $body     The parsed JSON received from AWS SNS.
 	 */
-	function handle_subscription_confirmation_request( $headers, $body ) {
+	public function handle_subscription_confirmation_request( $headers, $body ) {
 
 		$pending_subscriptions_option_key = EA_WP_AWS_SNS_Client_REST_Endpoint::PENDING_SUBSCRIPTIONS_OPTION_KEY;
 
 		$pending_subscriptions = get_option( $pending_subscriptions_option_key, array() );
 
+		// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 		$subscription_confirmation = array(
 			'message_id'    => $body->MessageId,
 			'topic_arn'     => $body->TopicArn,
 			'subscribe_url' => $body->SubscribeURL,
-			'timestamp'     => $body->Timestamp
+			'timestamp'     => $body->Timestamp,
 		);
 
 		$pending_subscriptions[ $body->TopicArn ] = $subscription_confirmation;
@@ -117,29 +118,36 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_REST extends WPPB_Object {
 	}
 
 	/**
-	 * @param $headers
-	 * @param $body
+	 * Unimplemented. Store the unsubscribed ARN information to later present/communicate to admins.
+	 *
+	 * @param array  $headers  The HTTP headers received from AWS SNS.
+	 * @param object $body     The parsed JSON received from AWS SNS.
 	 */
-	function handle_unsubscribe_confirmation( $headers, $body ) {
+	private function handle_unsubscribe_confirmation( $headers, $body ) {
 
-		// TODO:
+		// TODO: Store.
 	}
 
 	/**
-	 * Runs as cron so HTTP success response can be sent back without timeout
+	 * Enqueue a cron'd notification for other plugins to catch and process.
+	 * Cron'd so HTTP success response can be sent back without a timeout that could be incurred by other plugins'
+	 * long processing times.
 	 *
 	 * @see https://docs.aws.amazon.com/sns/latest/dg/sns-message-and-json-formats.html#http-notification-json
 	 *
-	 * @param $headers
-	 * @param $body
+	 * @param array  $headers  The HTTP headers received from AWS SNS.
+	 * @param object $body     The parsed JSON received from AWS SNS.
 	 */
-	function handle_notification( $headers, $body ) {
+	public function handle_notification( $headers, $body ) {
 
 		$topic_arn = $body->TopicArn;
-		$message = json_decode( $body->Message );
+		$message   = json_decode( $body->Message );
 
 		$args = array(
-			$topic_arn, $headers, $body, $message
+			$topic_arn,
+			$headers,
+			$body,
+			$message,
 		);
 
 		wp_schedule_single_event( time(), EA_WP_AWS_SNS_Client_REST_Endpoint::BACKGROUND_NOTIFY_CRON_ACTION, $args );

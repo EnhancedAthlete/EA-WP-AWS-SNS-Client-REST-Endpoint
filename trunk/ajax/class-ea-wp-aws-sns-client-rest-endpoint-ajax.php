@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The ajax-specific functionality of the plugin.
  *
@@ -23,51 +22,70 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Ajax extends WPPB_Object {
 
 
 	/**
+	 * Process the AJAX request to confirm the subscription.
 	 *
+	 * Added to `wp_ajax_ea_aws_sns_confirm_subscription` action.
 	 */
 	public function ajax_confirm_subscription() {
 
-		$subscription_topic = $_POST['subscription_topic'];
-
-		if( empty( $subscription_topic ) ) {
+		if ( ! isset( $_POST['subscription_topic'] ) ) {
 
 			$message = 'Confirm AWS SNS topic attempted with no subscription_topic POSTed';
 
-			do_action( 'ea_log_notice', $this->plugin_name, $this->version, $message,
+			do_action(
+				'ea_log_notice',
+				$this->plugin_name,
+				$this->version,
+				$message,
 				array(
 					'post'     => $_POST,
 					'file'     => __FILE__,
 					'class'    => __CLASS__,
-					'function' => __FUNCTION__
-				) );
+					'function' => __FUNCTION__,
+				)
+			);
 
 			// TODO: How to change the HTTP status code returned? // if error // 404 if the id doesn't exist?
-			return array( 'error' => 'error', 'message' => 'No subscription_topic POSTed.' );
+			$error = array(
+				'error'   => 'error',
+				'message' => 'No subscription_topic POSTed.',
+			);
+
+			echo wp_json_encode( $error );
+
+			wp_die();
 		}
+
+		$subscription_topic = filter_input( INPUT_POST, 'subscription_topic' );
 
 		$confirmation_result = $this->confirm_subscription( $subscription_topic );
 
-		echo json_encode( $confirmation_result );
+		echo wp_json_encode( $confirmation_result );
 
 		wp_die();
 	}
 
 	/**
-	 * Pings AWS to confirm the subscription.
+	 * Pings AWS to confirm the subscription. Deletes the subscription from the pending subscriptions option.
 	 *
-	 * @param $subscription_topic
+	 * @param string $subscription_topic The SNS ARN.
 	 *
 	 * @return array
 	 */
 	public function confirm_subscription( $subscription_topic ) {
 
-		do_action( 'ea_log_debug', $this->plugin_name, $this->version, "Confirming subscription for $subscription_topic.",
+		do_action(
+			'ea_log_debug',
+			$this->plugin_name,
+			$this->version,
+			"Confirming subscription for $subscription_topic.",
 			array(
 				'subscription_topic' => $subscription_topic,
-				'file'     => __FILE__,
-				'class'    => __CLASS__,
-		        'function' => __FUNCTION__
-		) );
+				'file'               => __FILE__,
+				'class'              => __CLASS__,
+				'function'           => __FUNCTION__,
+			)
+		);
 
 		$pending_subscriptions_option_key = EA_WP_AWS_SNS_Client_REST_Endpoint::PENDING_SUBSCRIPTIONS_OPTION_KEY;
 
@@ -75,107 +93,158 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Ajax extends WPPB_Object {
 
 		$subscription_to_confirm = $pending_subscriptions[ $subscription_topic ];
 
-		if( empty( $subscription_to_confirm ) ) {
+		if ( empty( $subscription_to_confirm ) ) {
 
 			$error_message = "$subscription_topic not found in list of pending subscriptions. Maybe already confirmed or dismissed.";
 
-			do_action( 'ea_log_notice', $this->plugin_name, $this->version, $error_message,
+			do_action(
+				'ea_log_notice',
+				$this->plugin_name,
+				$this->version,
+				$error_message,
 				array(
-					'subscription_topic' => $subscription_topic,
+					'subscription_topic'    => $subscription_topic,
 					'pending_subscriptions' => $pending_subscriptions,
-					'file'     => __FILE__,
-					'class'    => __CLASS__,
-					'function' => __FUNCTION__
-				) );
+					'file'                  => __FILE__,
+					'class'                 => __CLASS__,
+					'function'              => __FUNCTION__,
+				)
+			);
 
-			return array( 'error' => 'error', 'message' => $error_message );
+			return array(
+				'error'   => 'error',
+				'message' => $error_message,
+			);
 		}
 
 		$confirmation_url = $subscription_to_confirm['subscribe_url'];
 
 		$request_response = wp_remote_get( $confirmation_url );
 
-		if( is_wp_error( $request_response ) ) {
-			/** @var WP_Error $request_response */
+		if ( is_wp_error( $request_response ) ) {
+			/**
+			 * The request_response is an error, usually when there is no response whatsoever, or a problem
+			 * initiating the communication.
+			 *
+			 * @var WP_Error $request_response
+			 */
 
-			$error_message = 'Error confirming subscription <b><i>' . $subscription_topic .'</i></b>: ' . $request_response->get_error_message();
+			$error_message = 'Error confirming subscription <b><i>' . $subscription_topic . '</i></b>: ' . $request_response->get_error_message();
 
-			do_action( 'ea_log_error', $this->plugin_name, $this->version, $error_message,
+			do_action(
+				'ea_log_error',
+				$this->plugin_name,
+				$this->version,
+				$error_message,
 				array(
-					'error_code' => $request_response->get_error_code(),
-					'error_message' => $request_response->get_error_message(),
-					'subscription_topic' => $subscription_topic,
+					'error_code'            => $request_response->get_error_code(),
+					'error_message'         => $request_response->get_error_message(),
+					'subscription_topic'    => $subscription_topic,
 					'pending_subscriptions' => $pending_subscriptions,
-					'file'     => __FILE__,
-					'class'    => __CLASS__,
-					'function' => __FUNCTION__
-				) );
+					'file'                  => __FILE__,
+					'class'                 => __CLASS__,
+					'function'              => __FUNCTION__,
+				)
+			);
 
-			return array( 'error' => $request_response->get_error_code(), 'message' => $error_message);
+			return array(
+				'error'   => $request_response->get_error_code(),
+				'message' => $error_message,
+			);
 		}
 
-		// If unsuccessful
-		if( 2 != intval($request_response['response']['code'] / 100 ) ) {
+		// If unsuccessful.
+		if ( 2 !== intval( $request_response['response']['code'] / 100 ) ) {
 
 			$xml = new SimpleXMLElement( $request_response['body'] );
 
-			$error_message = 'Error confirming subscription for topic <b><i>' . $subscription_topic .'</i></b>. ' . $request_response['response']['message'] . ' : ' . $xml->{'Error'}->{'Message'};
+			$error_message = 'Error confirming subscription for topic <b><i>' . $subscription_topic . '</i></b>. ' . $request_response['response']['message'] . ' : ' . $xml->{'Error'}->{'Message'};
 
-			do_action( 'ea_log_error', $this->plugin_name, $this->version, $error_message,
+			do_action(
+				'ea_log_error',
+				$this->plugin_name,
+				$this->version,
+				$error_message,
 				array(
-					'error_xml' => $request_response['body'],
-					'subscription_topic' => $subscription_topic,
+					'error_xml'             => $request_response['body'],
+					'subscription_topic'    => $subscription_topic,
 					'pending_subscriptions' => $pending_subscriptions,
-					'file'     => __FILE__,
-					'class'    => __CLASS__,
-					'function' => __FUNCTION__
-				) );
+					'file'                  => __FILE__,
+					'class'                 => __CLASS__,
+					'function'              => __FUNCTION__,
+				)
+			);
 
-			return array( 'error' => $request_response['response']['code'], 'message' => $error_message  );
+			return array(
+				'error'   => $request_response['response']['code'],
+				'message' => $error_message,
+			);
 		}
 
-		// When successful
-
+		// When successful.
 		unset( $pending_subscriptions[ $subscription_topic ] );
 
 		update_option( $pending_subscriptions_option_key, $pending_subscriptions );
 
 		$message = "AWS SNS topic <b><i>$subscription_topic</i></b> subscription confirmed.";
 
-		do_action( 'ea_log_info', $this->plugin_name, $this->version, $message,
+		do_action(
+			'ea_log_info',
+			$this->plugin_name,
+			$this->version,
+			$message,
 			array(
 				'subscription_topic' => $subscription_topic,
-				'file'     => __FILE__,
-				'class'    => __CLASS__,
-				'function' => __FUNCTION__
-			) );
+				'file'               => __FILE__,
+				'class'              => __CLASS__,
+				'function'           => __FUNCTION__,
+			)
+		);
 
-		return array( 'success' => $subscription_topic, 'message' => $message );
+		return array(
+			'success' => $subscription_topic,
+			'message' => $message,
+		);
 	}
 
 
+	/**
+	 * AJAX handler to process dismissing subscriptions.
+	 */
 	public function ajax_dismiss_subscription() {
 
-		$subscription_topic = $_POST[ 'subscription_topic' ];
-
-		if( empty( $subscription_topic ) ) {
+		if ( ! isset( $_POST['subscription_topic'] ) ) {
 
 			$message = 'Dismiss AWS SNS topic attempted with no subscription_topic POSTed';
 
-			do_action( 'ea_log_notice', $this->plugin_name, $this->version, $message,
+			do_action(
+				'ea_log_notice',
+				$this->plugin_name,
+				$this->version,
+				$message,
 				array(
 					'post'     => $_POST,
 					'file'     => __FILE__,
 					'class'    => __CLASS__,
-					'function' => __FUNCTION__
-				) );
+					'function' => __FUNCTION__,
+				)
+			);
 
-			return array( 'error' => 'error', 'message' => 'No subscription_topic POSTed.' );
+			$error = array(
+				'error'   => 'error',
+				'message' => 'No subscription_topic POSTed.',
+			);
+
+			echo wp_json_encode( $error );
+
+			wp_die();
 		}
+
+		$subscription_topic = filter_input( INPUT_POST, 'subscription_topic' );
 
 		$dismiss_result = $this->dismiss_subscription( $subscription_topic );
 
-		echo json_encode( $dismiss_result );
+		echo wp_json_encode( $dismiss_result );
 
 		wp_die();
 	}
@@ -185,7 +254,7 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Ajax extends WPPB_Object {
 	 *
 	 * DOES NOT remove references in AWS.
 	 *
-	 * @param $subscription_topic
+	 * @param string $subscription_topic The SNS ARN.
 	 *
 	 * @return array to be parsed as JSON in admin UI.
 	 */
@@ -203,30 +272,46 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Ajax extends WPPB_Object {
 
 			update_option( $pending_subscriptions_option_key, $pending_subscriptions );
 
-			do_action( 'ea_log_info', $this->plugin_name, $this->version, $message,
+			do_action(
+				'ea_log_info',
+				$this->plugin_name,
+				$this->version,
+				$message,
 				array(
 					'subscription_topic' => $subscription_topic,
-					'file'     => __FILE__,
-					'class'    => __CLASS__,
-					'function' => __FUNCTION__
-				) );
+					'file'               => __FILE__,
+					'class'              => __CLASS__,
+					'function'           => __FUNCTION__,
+				)
+			);
 
-			return array( 'success' => $subscription_topic, 'message' => $message );
+			return array(
+				'success' => $subscription_topic,
+				'message' => $message,
+			);
 
 		} else {
 
 			$error_message = "$subscription_topic not found in list of pending subscriptions. Maybe already confirmed or dismissed.";
 
-			do_action( 'ea_log_notice', $this->plugin_name, $this->version, $error_message,
+			do_action(
+				'ea_log_notice',
+				$this->plugin_name,
+				$this->version,
+				$error_message,
 				array(
-					'subscription_topic' => $subscription_topic,
+					'subscription_topic'    => $subscription_topic,
 					'pending_subscriptions' => $pending_subscriptions,
-					'file'     => __FILE__,
-					'class'    => __CLASS__,
-					'function' => __FUNCTION__
-				) );
+					'file'                  => __FILE__,
+					'class'                 => __CLASS__,
+					'function'              => __FUNCTION__,
+				)
+			);
 
-			return array( 'error' => 'error', 'message' => $error_message );
+			return array(
+				'error'   => 'error',
+				'message' => $error_message,
+			);
 		}
 	}
 }
