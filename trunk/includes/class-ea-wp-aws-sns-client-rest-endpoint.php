@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The file that defines the core plugin class
  *
@@ -140,8 +139,6 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 
 		$this->loader->add_filter( 'plugin_action_links', $plugin_admin, 'plugin_action_links', 20, 2 );
 		$this->loader->add_filter( 'plugin_row_meta', $plugin_admin, 'plugin_row_meta', 20, 4 );
-
-		// TODO: $this->loader->add_action( 'init?', $plugin_admin, 'process non AJAX confirmation' );
 	}
 
 	/**
@@ -184,7 +181,7 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 
 		$plugin_cron = new EA_WP_AWS_SNS_Client_REST_Endpoint_Cron( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'ea_wp_aws_sns_client_rest_endpoint_notify_in_background', $plugin_cron, 'notify_in_background', 10, 4 );
+		$this->loader->add_action( EA_WP_AWS_SNS_Client_REST_Endpoint_Cron::NOTIFY_IN_BACKGROUND_JOB_NAME, $plugin_cron, 'notify_in_background', 10, 4 );
 	}
 
 	/**

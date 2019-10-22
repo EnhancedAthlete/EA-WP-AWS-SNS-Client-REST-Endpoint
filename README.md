@@ -1,10 +1,13 @@
+
+[![WordPress tested 5.2](https://img.shields.io/badge/WordPress-v5.2%20tested-0073aa.svg)](https://wordpress.org/) [![PHPCS WPCS](https://img.shields.io/badge/PHPCS-WordPress%20Coding%20Standards-8892BF.svg)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards) [![License: GPL v2 or later](https://img.shields.io/badge/License-GPL%20v2%20or%20later-bd0000.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) [![PHPUnit ](https://img.shields.io/badge/PHPUnit-32%25%20coverage-f2dede.svg)]()
+
 # EA WP AWS SNS - Client REST Endpoint
 
-A [WordPress](https://aws.amazon.com/transcribe/) plugin providing a REST API endpoint to receive messages from [Amazon Web Services Simple Notification Service](https://aws.amazon.com/sns/) for other plugins to consume.
+A [WordPress](https://wordpress.org/) plugin providing a REST API endpoint to receive messages from [Amazon Web Services Simple Notification Service](https://aws.amazon.com/sns/) for other plugins to consume.
 
 ## Purpose
 
-We are using [AWS Transcribe](https://aws.amazon.com/transcribe/) to transcribe videos on [AnabolicTV.com](https://anabolictv.com) and when it completes, AWS SNS communicates to our WordPress install that the job is finished so we can retrieve the output.
+We are using [AWS Transcribe](https://aws.amazon.com/transcribe/) to transcribe videos on [AnabolicTV.com](https://anabolictv.com) and when it completes, AWS SNS communicates to our WordPress instance that the job is finished so we can retrieve the output.
 
 If emails from WordPress are sent via [AWS SES](https://aws.amazon.com/ses/) (using [WP SES plugin](https://wordpress.org/plugins/wp-ses/)) a plugin to delete accounts whose email addresses bounce could use this plugin to receive the notifications.
 
@@ -102,6 +105,10 @@ function my_info_log_handler( $plugin_name, $plugin_version, $message, $context 
 
 We have an internal logging setup that boils down to this, but isn't yet worth publishing.
 
+### WordPress Plugin Directory
+
+The WordPress Plugin Directory does not accept ["framework plugins or library plugins"](https://developer.wordpress.org/plugins/wordpress-org/plugin-developer-faq/#are-there-plugins-you-dont-accept). If submitting a plugin to the directory with this code, please be considerate and namespace the SNS code so others can use it in their plugins too without class name conflicts.
+
 ## Test
 
 Run `composer install` to install [WP Mock](https://github.com/10up/wp_mock) and [PHP Unit](https://github.com/sebastianbergmann/phpunit) dependencies.
@@ -112,13 +119,13 @@ Run `phpunit tests --bootstrap ./tests/bootstrap.php` to test.
 
 * Localise time from UTC ("subscription confirmation request received on...")
 * Delete subscription requests over 3 days old: [SNS API Reference](https://docs.aws.amazon.com/sns/latest/api/API_Subscribe.html) says 
-"Confirmation tokens are valid for three days. "
+"Confirmation tokens are valid for three days."
 * Add REST API 'description' for OPTION requests
 * i18n
 * Non AJAX confirm/dismiss
-* An action could be add to allow plugins automatically confirm subscriptions.
-* Logging is haphazard so far, could do with systematic approach.
-* CI: Code coverage / GitHub release archives / Push to WordPress.org
+* An action could be add to allow plugins automatically confirm subscriptions
+* Logging is haphazard so far, could do with systematic approach
+* CI: GitHub release archives
 
 ## Acknowledgements
 

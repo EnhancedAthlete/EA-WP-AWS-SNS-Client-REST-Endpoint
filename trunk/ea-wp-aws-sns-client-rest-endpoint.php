@@ -1,6 +1,8 @@
 <?php
-
 /**
+ * A WordPress plugin providing a REST API endpoint to receive messages from
+ *  Amazon Web Services Simple Notification Service for other plugins to consume.
+ *
  * @link              https://BrianHenry.ie
  * @since             1.0.0
  * @package           EA_WP_AWS_SNS_Client_REST_Endpoint
@@ -26,6 +28,9 @@ if ( ! defined( 'WPINC' ) ) {
 // Currently plugin version.
 define( 'EA_WP_AWS_SNS_CLIENT_REST_ENDPOINT_VERSION', '2.0.0' );
 
+/**
+ * The deactivation hook, which ultimately deletes any cron jobs configured.
+ */
 function deactivate_ea_wp_aws_sns_client_rest_endpoint() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-ea-wp-aws-sns-client-rest-endpoint-deactivator.php';
 	EA_WP_AWS_SNS_Client_REST_Endpoint_Deactivator::deactivate();
