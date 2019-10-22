@@ -1,5 +1,5 @@
 
-[![WordPress tested 5.2](https://img.shields.io/badge/WordPress-v5.2%20tested-0073aa.svg)](https://wordpress.org/) [![PHPCS WPCS](https://img.shields.io/badge/PHPCS-WordPress%20Coding%20Standards-8892BF.svg)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards) [![License: GPL v2 or later](https://img.shields.io/badge/License-GPL%20v2%20or%20later-bd0000.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) [![PHPUnit ](https://img.shields.io/badge/PHPUnit-32%25%20coverage-f2dede.svg)]()
+[![WordPress tested 5.2](https://img.shields.io/badge/WordPress-v5.2%20tested-0073aa.svg)](https://wordpress.org/) [![PHPCS WPCS](https://img.shields.io/badge/PHPCS-WordPress%20Coding%20Standards-8892BF.svg)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards) [![License: GPL v2 or later](https://img.shields.io/badge/License-GPL%20v2%20or%20later-bd0000.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) [![PHPUnit ](https://img.shields.io/badge/PHPUnit-32%25%20coverage-dc3545.svg)]()
 
 # EA WP AWS SNS - Client REST Endpoint
 
@@ -27,11 +27,11 @@ In your plugin, handle using:
 add_filter( 'ea_aws_sns_notification', 'my_notification_handler', 10, 5 );
 
 /*
- * @param array   $handled					   List of plugins that have handled this notification.
- * @param string  $notification_topic_arn  $body->TopicArn
- * @param array   $headers                 HTTP headers received
- * @param object  $body                    HTTP body received
- * @param object  $message                 $body->Message JSON decoded
+ * @param array   $handled					List of plugins that have handled this notification.
+ * @param string  $notification_topic_arn	$body->TopicArn
+ * @param array   $headers                	HTTP headers received
+ * @param object  $body                  	HTTP body received
+ * @param object  $message                	$body->Message JSON decoded
  */
 function my_notification_handler( $handled, $notification_topic_arn, $headers, $body, $message ) {
 
@@ -47,6 +47,7 @@ function my_notification_handler( $handled, $notification_topic_arn, $headers, $
 	
 	// Confirm the notification has been handled.
 	$handled[] = array( 'my-plugin-name', __FUNCTION__ );	
+	
 	return $handled;
 }
 ```
