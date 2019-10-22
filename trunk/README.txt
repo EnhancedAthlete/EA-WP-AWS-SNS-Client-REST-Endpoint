@@ -51,5 +51,9 @@ function my_notification_handler( $handled $notification_topic_arn, $headers, $b
 
 == Changelog ==
 
-= 1.0 =
+= 2.0.0 =
+
+Changed action to filter so this plugin can log if the notification was handled.
+
+= 1.0.0 =
 * Adequately working internally.

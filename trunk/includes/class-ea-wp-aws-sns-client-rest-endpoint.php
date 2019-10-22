@@ -78,7 +78,7 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 		if ( defined( 'EA_WP_AWS_SNS_CLIENT_REST_ENDPOINT_VERSION' ) ) {
 			$this->version = EA_WP_AWS_SNS_CLIENT_REST_ENDPOINT_VERSION;
 		} else {
-			$this->version = '1.0.0';
+			$this->version = '2.0.0';
 		}
 		$this->plugin_name = 'ea-wp-aws-sns-client-rest-endpoint';
 
