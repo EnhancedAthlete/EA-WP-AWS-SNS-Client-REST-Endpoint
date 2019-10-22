@@ -34,6 +34,10 @@ function deactivate_ea_wp_aws_sns_client_rest_endpoint() {
 
 register_deactivation_hook( __FILE__, 'deactivate_ea_wp_aws_sns_client_rest_endpoint' );
 
+require_once plugin_dir_path( __FILE__ ) . 'lib/wppb/interface-wppb-loader.php';
+require_once plugin_dir_path( __FILE__ ) . 'lib/wppb/class-wppb-loader.php';
+require_once plugin_dir_path( __FILE__ ) . 'lib/wppb/class-wppb-object.php';
+
 // Main plugin file. Defines below class.
 require plugin_dir_path( __FILE__ ) . 'includes/class-ea-wp-aws-sns-client-rest-endpoint.php';
 
