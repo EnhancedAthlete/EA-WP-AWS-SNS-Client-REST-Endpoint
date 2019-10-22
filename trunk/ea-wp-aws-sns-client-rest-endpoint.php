@@ -32,7 +32,6 @@ function deactivate_ea_wp_aws_sns_client_rest_endpoint() {
 	EA_WP_AWS_SNS_Client_REST_Endpoint_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_ea_wp_aws_sns_client_rest_endpoint' );
 register_deactivation_hook( __FILE__, 'deactivate_ea_wp_aws_sns_client_rest_endpoint' );
 
 // Main plugin file. Defines below class.
