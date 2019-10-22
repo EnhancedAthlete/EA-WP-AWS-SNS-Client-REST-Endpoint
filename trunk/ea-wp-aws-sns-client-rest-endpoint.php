@@ -41,10 +41,30 @@ require_once plugin_dir_path( __FILE__ ) . 'lib/wppb/class-wppb-object.php';
 // Main plugin file. Defines below class.
 require plugin_dir_path( __FILE__ ) . 'includes/class-ea-wp-aws-sns-client-rest-endpoint.php';
 
-function run_ea_wp_aws_sns_client_rest_endpoint() {
+/**
+ * Configure an instance of the plugin.
+ *
+ * @return EA_WP_AWS_SNS_Client_REST_Endpoint
+ */
+function instantiate_ea_wp_aws_sns_client_rest_endpoint() {
 
-	$plugin = new EA_WP_AWS_SNS_Client_REST_Endpoint();
-	$plugin->run();
+	$loader = new WPPB_Loader();
 
+	$ea_wp_aws_sns_client_rest_endpoint = new EA_WP_AWS_SNS_Client_REST_Endpoint( $loader );
+
+	return $ea_wp_aws_sns_client_rest_endpoint;
 }
-run_ea_wp_aws_sns_client_rest_endpoint();
+
+/**
+ * Begins execution of the plugin.
+ *
+ * Since everything within the plugin is registered via hooks,
+ * then kicking off the plugin from this point in the file does
+ * not affect the page life cycle.
+ *
+ * @since    1.0.0
+ *
+ * phpcs:disable Squiz.PHP.DisallowMultipleAssignments.Found
+ */
+$GLOBALS['ea-wp-aws-sns-client-rest-endpoint'] = $ea_wp_aws_sns_client_rest_endpoint = instantiate_ea_wp_aws_sns_client_rest_endpoint();
+$ea_wp_aws_sns_client_rest_endpoint->run();

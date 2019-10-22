@@ -30,12 +30,12 @@
 class EA_WP_AWS_SNS_Client_REST_Endpoint {
 
 	/**
-	 * The loader that's responsible for maintaining and registering all hooks that power
-	 * the plugin.
+	 * The WordPress Plugin Boilerplate loader that's responsible for maintaining and
+	 * registering all hooks that power the plugin.
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      EA_WP_AWS_SNS_Client_REST_Endpoint_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var     WPPB_Loader_Interface    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -71,8 +71,10 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 	 * the public-facing side of the site.
 	 *
 	 * @since    1.0.0
+	 *
+	 * @param WPPB_Loader_Interface $loader The WordPress Plugin Boilerplate loader object.
 	 */
-	public function __construct() {
+	public function __construct( $loader ) {
 		if ( defined( 'EA_WP_AWS_SNS_CLIENT_REST_ENDPOINT_VERSION' ) ) {
 			$this->version = EA_WP_AWS_SNS_CLIENT_REST_ENDPOINT_VERSION;
 		} else {
@@ -81,6 +83,8 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 		$this->plugin_name = 'ea-wp-aws-sns-client-rest-endpoint';
 
 		$this->load_dependencies();
+
+		$this->loader = $loader;
 
 		$this->define_admin_hooks();
 		$this->define_ajax_hooks();
@@ -93,25 +97,10 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 	/**
 	 * Load the required dependencies for this plugin.
 	 *
-	 * Include the following files that make up the plugin:
-	 *
-	 * - EA_WP_AWS_SNS_Client_REST_Endpoint_Loader. Orchestrates the hooks of the plugin.
-	 * - EA_WP_AWS_SNS_Client_REST_Endpoint_Admin. Defines all hooks for the admin area.
-	 * - EA_WP_AWS_SNS_Client_REST_Endpoint_Public. Defines all hooks for the public side of the site.
-	 *
-	 * Create an instance of the loader which will be used to register the hooks
-	 * with WordPress.
-	 *
 	 * @since    1.0.0
 	 * @access   private
 	 */
 	private function load_dependencies() {
-
-		/**
-		 * The class responsible for orchestrating the actions and filters of the
-		 * core plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-ea-wp-aws-sns-client-rest-endpoint-loader.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
@@ -132,9 +121,6 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 		 * The class responsible for defining all actions that occur in the cron area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'cron/class-ea-wp-aws-sns-client-rest-endpoint-cron.php';
-
-		$this->loader = new EA_WP_AWS_SNS_Client_REST_Endpoint_Loader();
-
 	}
 
 	/**
@@ -225,7 +211,7 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     1.0.0
-	 * @return    EA_WP_AWS_SNS_Client_REST_Endpoint_Loader    Orchestrates the hooks of the plugin.
+	 * @return    \WPPB_Loader_Interface    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;
