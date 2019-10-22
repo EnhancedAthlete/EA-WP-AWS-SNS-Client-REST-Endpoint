@@ -1,0 +1,15 @@
+{
+  "headers": {},
+  "body": "<ErrorResponse xmlns=\"http:\/\/sns.amazonaws.com\/doc\/2010-03-31\/\">\n  <Error>\n    <Type>Sender<\/Type>\n    <Code>InvalidParameter<\/Code>\n    <Message>Invalid parameter: Token<\/Message>\n  <\/Error>\n  <RequestId>64c46344-086e-51c6-123a-3651e80a830a<\/RequestId>\n<\/ErrorResponse>\n",
+  "response": {
+    "code": 400,
+    "message": "Bad Request"
+  },
+  "cookies": [],
+  "filename": null,
+  "http_response": {
+    "data": null,
+    "headers": null,
+    "status": null
+  }
+}
