@@ -21,23 +21,30 @@ When a subscription has been confirmed, messages from SNS of type `Notification`
 In your plugin, handle using:
 
 ```
-add_action( 'ea_aws_sns_notification', 'my_notification_handler', 10, 4 );
+add_filter( 'ea_aws_sns_notification', 'my_notification_handler', 10, 5 );
 
 /*
+ * @param array   $handled					   List of plugins that have handled this notification.
  * @param string  $notification_topic_arn  $body->TopicArn
  * @param array   $headers                 HTTP headers received
  * @param object  $body                    HTTP body received
  * @param object  $message                 $body->Message JSON decoded
  */
-function my_notification_handler( $notification_topic_arn, $headers, $body, $message ) {
+function my_notification_handler( $handled, $notification_topic_arn, $headers, $body, $message ) {
 
 	$my_topic_arn = ...
 
 	if( $my_topic_arn != $notification_topic_arn ) {
-		return;
+		return $handled;
 	}
 	
 	// Handle
+	
+	...
+	
+	// Confirm the notification has been handled.
+	$handled[] = array( 'my-plugin-name', __FUNCTION__ );	
+	return $handled;
 }
 ```
 

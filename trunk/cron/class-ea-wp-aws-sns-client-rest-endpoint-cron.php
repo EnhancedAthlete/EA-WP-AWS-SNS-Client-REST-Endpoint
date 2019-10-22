@@ -1,7 +1,9 @@
 <?php
-
 /**
  * The cron-specific functionality of the plugin.
+ * Allows responding to the AWS HTTP call instantly, and passing
+ * the notification data (via action) to its consuming plugin without
+ * worrying about timeouts.
  *
  * @link       https://BrianHenry.ie
  * @since      1.0.0
@@ -21,19 +23,22 @@
  */
 class EA_WP_AWS_SNS_Client_REST_Endpoint_Cron extends WPPB_Object {
 
+	const NOTIFY_IN_BACKGROUND_JOB_NAME = 'ea_wp_aws_sns_client_rest_endpoint_notify_in_background';
 
 	/**
-	 * This typically runs in the background.
-	 * It wouldn't make much sense to run it directly when the action it fires is clearer.
+	 * This method is hooked to an action so WordPress's cron system can be used to process the notification
+	 * in the background.
+	 * If fires the action `ea_aws_sns_notification` with the notification data and other plugins are expected
+	 * to listen for this action.
 	 *
-	 * @param $topic_arn
-	 * @param $headers
-	 * @param $body
-	 * @param $message
+	 * @param string $topic_arn The AWS SNS topic Amazon Resource Name.
+	 * @param array  $headers   HTTP headers received.
+	 * @param object $body      JSON decoded HTTP body received from SNS.
+	 * @param object $message   JSON decoded $body->message.
 	 */
 	public function notify_in_background( $topic_arn, $headers, $body, $message ) {
 
-		do_action( EA_WP_AWS_SNS_Client_REST_Endpoint::NEW_NOTIFICATION_ACTION, $topic_arn, $headers, $body, $message );
+		apply_filters( EA_WP_AWS_SNS_Client_REST_Endpoint::NEW_NOTIFICATION_ACTION, array(), $topic_arn, $headers, $body, $message );
 	}
 
 }
