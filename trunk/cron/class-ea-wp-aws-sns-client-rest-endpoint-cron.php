@@ -38,7 +38,27 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Cron extends WPPB_Object {
 	 */
 	public function notify_in_background( $topic_arn, $headers, $body, $message ) {
 
-		apply_filters( EA_WP_AWS_SNS_Client_REST_Endpoint::NEW_NOTIFICATION_ACTION, array(), $topic_arn, $headers, $body, $message );
+		$handled = array();
+		$handled = apply_filters( EA_WP_AWS_SNS_Client_REST_Endpoint::NEW_NOTIFICATION_ACTION, $handled, $topic_arn, $headers, $body, $message );
+
+		if ( 0 === count( $handled ) ) {
+
+			$error_message = 'Notification for topic ' . $topic_arn . ' not handled.';
+
+			do_action(
+				'ea_log_notice',
+				$this->plugin_name,
+				$this->version,
+				$error_message,
+				array(
+					'subscription_topic' => $topic_arn,
+					'notification'       => $body,
+					'file'               => __FILE__,
+					'class'              => __CLASS__,
+					'function'           => __FUNCTION__,
+				)
+			);
+		}
 	}
 
 }
