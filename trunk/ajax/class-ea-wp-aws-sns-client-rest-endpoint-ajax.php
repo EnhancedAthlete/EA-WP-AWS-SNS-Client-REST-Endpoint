@@ -28,6 +28,11 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Ajax extends WPPB_Object {
 	 */
 	public function ajax_confirm_subscription() {
 
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( $_GET['_wpnonce'] ) ) ) {
+			// TODO: Return a descriptive error.
+			return;
+		}
+
 		if ( ! isset( $_POST['subscription_topic'] ) ) {
 
 			$message = 'Confirm AWS SNS topic attempted with no subscription_topic POSTed';
@@ -212,6 +217,11 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Ajax extends WPPB_Object {
 	 * AJAX handler to process dismissing subscriptions.
 	 */
 	public function ajax_dismiss_subscription() {
+
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_key( $_GET['_wpnonce'] ) ) ) {
+			// TODO: Return a descriptive error.
+			return;
+		}
 
 		if ( ! isset( $_POST['subscription_topic'] ) ) {
 
