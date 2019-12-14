@@ -9,6 +9,10 @@
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/ajax
  */
 
+namespace EA_WP_AWS_SNS_Client_REST_Endpoint\ajax;
+
+use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\EA_WP_AWS_SNS_Client_REST_Endpoint;
+
 /**
  * The ajax-specific functionality of the plugin.
  *
@@ -18,7 +22,7 @@
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/ajax
  * @author     Brian Henry <BrianHenryIE@gmail.com>
  */
-class EA_WP_AWS_SNS_Client_REST_Endpoint_Ajax extends WPPB_Object {
+class Ajax extends \WPPB_Object {
 
 
 	/**
@@ -131,7 +135,7 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Ajax extends WPPB_Object {
 			 * The request_response is an error, usually when there is no response whatsoever, or a problem
 			 * initiating the communication.
 			 *
-			 * @var WP_Error $request_response
+			 * @var \WP_Error $request_response
 			 */
 
 			$error_message = 'Error confirming subscription <b><i>' . $subscription_topic . '</i></b>: ' . $request_response->get_error_message();
@@ -161,7 +165,7 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Ajax extends WPPB_Object {
 		// If unsuccessful.
 		if ( 2 !== intval( $request_response['response']['code'] / 100 ) ) {
 
-			$xml = new SimpleXMLElement( $request_response['body'] );
+			$xml = new \SimpleXMLElement( $request_response['body'] );
 
 			$error_message = 'Error confirming subscription for topic <b><i>' . $subscription_topic . '</i></b>. ' . $request_response['response']['message'] . ' : ' . $xml->{'Error'}->{'Message'};
 

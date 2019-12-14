@@ -12,6 +12,13 @@
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/includes
  */
 
+namespace EA_WP_AWS_SNS_Client_REST_Endpoint\includes;
+
+use EA_WP_AWS_SNS_Client_REST_Endpoint\admin\Admin;
+use EA_WP_AWS_SNS_Client_REST_Endpoint\ajax\Ajax;
+use EA_WP_AWS_SNS_Client_REST_Endpoint\cron\Cron;
+use EA_WP_AWS_SNS_Client_REST_Endpoint\rest\REST;
+
 /**
  * The core plugin class.
  *
@@ -34,7 +41,7 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var     WPPB_Loader_Interface    $loader    Maintains and registers all hooks for the plugin.
+	 * @var     \WPPB_Loader_Interface    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -62,6 +69,8 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 
 	const NEW_NOTIFICATION_ACTION = 'ea_aws_sns_notification';
 
+	public $cron;
+
 	/**
 	 * Define the core functionality of the plugin.
 	 *
@@ -71,7 +80,7 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 	 *
 	 * @since    1.0.0
 	 *
-	 * @param WPPB_Loader_Interface $loader The WordPress Plugin Boilerplate loader object.
+	 * @param \WPPB_Loader_Interface $loader The WordPress Plugin Boilerplate loader object.
 	 */
 	public function __construct( $loader ) {
 		if ( defined( 'EA_WP_AWS_SNS_CLIENT_REST_ENDPOINT_VERSION' ) ) {
@@ -80,8 +89,6 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 			$this->version = '2.0.0';
 		}
 		$this->plugin_name = 'ea-wp-aws-sns-client-rest-endpoint';
-
-		$this->load_dependencies();
 
 		$this->loader = $loader;
 
@@ -94,35 +101,6 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 	}
 
 	/**
-	 * Load the required dependencies for this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function load_dependencies() {
-
-		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-ea-wp-aws-sns-client-rest-endpoint-admin.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the rest area.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'ajax/class-ea-wp-aws-sns-client-rest-endpoint-ajax.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the rest area.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'rest/class-ea-wp-aws-sns-client-rest-endpoint-rest.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the cron area.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'cron/class-ea-wp-aws-sns-client-rest-endpoint-cron.php';
-	}
-
-	/**
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
 	 *
@@ -131,7 +109,7 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new EA_WP_AWS_SNS_Client_REST_Endpoint_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
@@ -150,7 +128,7 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 	 */
 	private function define_ajax_hooks() {
 
-		$plugin_ajax = new EA_WP_AWS_SNS_Client_REST_Endpoint_Ajax( $this->get_plugin_name(), $this->get_version() );
+		$plugin_ajax = new Ajax( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_ajax_ea_aws_sns_confirm_subscription', $plugin_ajax, 'ajax_confirm_subscription' );
 		$this->loader->add_action( 'wp_ajax_ea_aws_sns_dismiss_subscription', $plugin_ajax, 'ajax_dismiss_subscription' );
@@ -165,7 +143,7 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 	 */
 	private function define_rest_hooks() {
 
-		$plugin_rest = new EA_WP_AWS_SNS_Client_REST_Endpoint_REST( $this->get_plugin_name(), $this->get_version() );
+		$plugin_rest = new REST( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'rest_api_init', $plugin_rest, 'rest_api_init' );
 	}
@@ -179,9 +157,9 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 	 */
 	private function define_cron_hooks() {
 
-		$plugin_cron = new EA_WP_AWS_SNS_Client_REST_Endpoint_Cron( $this->get_plugin_name(), $this->get_version() );
+		$this->cron = $plugin_cron = new Cron( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( EA_WP_AWS_SNS_Client_REST_Endpoint_Cron::NOTIFY_IN_BACKGROUND_JOB_NAME, $plugin_cron, 'notify_in_background', 10, 4 );
+		// $this->loader->add_action( EA_WP_AWS_SNS_Client_REST_Endpoint_Cron::NOTIFY_IN_BACKGROUND_JOB_NAME, $plugin_cron, 'notify_in_background', 10, 4 );
 	}
 
 	/**

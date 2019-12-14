@@ -11,6 +11,10 @@
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/rest
  */
 
+namespace EA_WP_AWS_SNS_Client_REST_Endpoint\rest;
+
+use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\EA_WP_AWS_SNS_Client_REST_Endpoint;
+
 /**
  * The REST API functionality of the plugin.
  *
@@ -20,7 +24,7 @@
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/rest
  * @author     Brian Henry <BrianHenryIE@gmail.com>
  */
-class EA_WP_AWS_SNS_Client_REST_Endpoint_REST extends WPPB_Object {
+class REST extends \WPPB_Object {
 
 	/**
 	 * Defines the REST endpoint itself. Added on WordPress `rest_api_init` action.
@@ -41,11 +45,11 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_REST extends WPPB_Object {
 	/**
 	 * Parse the REST request for the SNS notification.
 	 *
-	 * @param WP_REST_Request $request The HTTP request received at our REST endpoint.
+	 * @param \WP_REST_Request $request The HTTP request received at our REST endpoint.
 	 *
 	 * @return bool
 	 */
-	public function process_new_aws_sns_notification( WP_REST_Request $request ) {
+	public function process_new_aws_sns_notification( \WP_REST_Request $request ) {
 
 		$headers = $request->get_headers();
 

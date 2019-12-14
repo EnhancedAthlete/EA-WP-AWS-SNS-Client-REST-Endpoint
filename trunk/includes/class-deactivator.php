@@ -9,6 +9,8 @@
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/includes
  */
 
+namespace EA_WP_AWS_SNS_Client_REST_Endpoint\includes;
+
 /**
  * Fired during plugin deactivation.
  *
@@ -19,7 +21,7 @@
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/includes
  * @author     Brian Henry <BrianHenryIE@gmail.com>
  */
-class EA_WP_AWS_SNS_Client_REST_Endpoint_Deactivator {
+class Deactivator {
 
 	/**
 	 * Cancel scheduled crons (probably unnecessary).

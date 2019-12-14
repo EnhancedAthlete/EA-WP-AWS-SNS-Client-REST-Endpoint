@@ -9,6 +9,10 @@
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/admin
  */
 
+namespace EA_WP_AWS_SNS_Client_REST_Endpoint\admin;
+
+use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\EA_WP_AWS_SNS_Client_REST_Endpoint;
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -19,7 +23,7 @@
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/admin
  * @author     Brian Henry <BrianHenryIE@gmail.com>
  */
-class EA_WP_AWS_SNS_Client_REST_Endpoint_Admin extends WPPB_Object {
+class Admin extends \WPPB_Object {
 
 	/**
 	 * Register the JavaScript for the admin area.
@@ -106,10 +110,10 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Admin extends WPPB_Object {
 			// TODO: subscription requests expire after three days, so check and discard. Maybe start a cron
 			// when they're received.
 			try {
-				$subscription_datetime = new DateTime( $subscription['timestamp'] );
+				$subscription_datetime = new \DateTime( $subscription['timestamp'] );
 				// TODO: UTC -> timezones: 2019-03-13T22:28:29.810Z -> ???.
 				$time = $subscription_datetime->format( $wordpress_admin_date_format );
-			} catch ( Exception $e ) {
+			} catch ( \Exception $e ) {
 				$time = $subscription['timestamp'];
 			}
 
@@ -117,6 +121,7 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Admin extends WPPB_Object {
 
 			// TODO: i18n.
 			// TODO: The same id is being used on both dismiss link and confirm link.
+			// TODO: nonce.
 			$message = "AWS SNS topic <b><i>$topic_arn</i></b> subscription confirmation request received <i>$time</i>. <a class=\"ea-wp-sns-confirm\" id=\"$topic_arn\" href=\"$html_confirm_url\">Confirm subscription</a>. <a id=\"$topic_arn\" class=\"ea-wp-sns-dismiss\" href=\"$html_dismiss_url\">Dismiss</a>.";
 
 			$admin_notices[] = sprintf( '<div class="%1$s"><p class="%2$s">%3$s</p></div>', esc_attr( $outer_css_class ), esc_attr( $inner_css_class ), $message );
@@ -159,7 +164,7 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Admin extends WPPB_Object {
 	 *
 	 * @return array The filtered $plugin_meta.
 	 */
-	public function row_meta( $plugin_meta, $plugin_file_name, $plugin_data, $status ) {
+	public function plugin_row_meta( $plugin_meta, $plugin_file_name, $plugin_data, $status ) {
 
 		if ( $this->plugin_name . '/' . $this->plugin_name . '.php' === $plugin_file_name ) {
 

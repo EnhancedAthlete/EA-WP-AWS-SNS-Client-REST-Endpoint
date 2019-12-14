@@ -20,10 +20,17 @@
  * Domain Path:       /languages
  */
 
+namespace EA_WP_AWS_SNS_Client_REST_Endpoint;
+
 // If this file is called directly, abort.
+use EA_WP_AWS_SNS_Client_REST_Endpoint\cron\Cron;
+use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\EA_WP_AWS_SNS_Client_REST_Endpoint;
+
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
+
+require_once plugin_dir_path( __FILE__ ) . 'autoload.php';
 
 // Currently plugin version.
 define( 'EA_WP_AWS_SNS_CLIENT_REST_ENDPOINT_VERSION', '2.0.0' );
@@ -32,18 +39,13 @@ define( 'EA_WP_AWS_SNS_CLIENT_REST_ENDPOINT_VERSION', '2.0.0' );
  * The deactivation hook, which ultimately deletes any cron jobs configured.
  */
 function deactivate_ea_wp_aws_sns_client_rest_endpoint() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-ea-wp-aws-sns-client-rest-endpoint-deactivator.php';
-	EA_WP_AWS_SNS_Client_REST_Endpoint_Deactivator::deactivate();
+
+	Deactivator::deactivate();
 }
 
 register_deactivation_hook( __FILE__, 'deactivate_ea_wp_aws_sns_client_rest_endpoint' );
 
-require_once plugin_dir_path( __FILE__ ) . 'lib/wppb/interface-wppb-loader.php';
-require_once plugin_dir_path( __FILE__ ) . 'lib/wppb/class-wppb-loader.php';
-require_once plugin_dir_path( __FILE__ ) . 'lib/wppb/class-wppb-object.php';
 
-// Main plugin file. Defines below class.
-require plugin_dir_path( __FILE__ ) . 'includes/class-ea-wp-aws-sns-client-rest-endpoint.php';
 
 /**
  * Configure an instance of the plugin.
@@ -52,7 +54,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-ea-wp-aws-sns-client-rest-
  */
 function instantiate_ea_wp_aws_sns_client_rest_endpoint() {
 
-	$loader = new WPPB_Loader();
+	$loader = new \WPPB_Loader();
 
 	$ea_wp_aws_sns_client_rest_endpoint = new EA_WP_AWS_SNS_Client_REST_Endpoint( $loader );
 
@@ -70,5 +72,8 @@ function instantiate_ea_wp_aws_sns_client_rest_endpoint() {
  *
  * phpcs:disable Squiz.PHP.DisallowMultipleAssignments.Found
  */
-$GLOBALS['ea-wp-aws-sns-client-rest-endpoint'] = $ea_wp_aws_sns_client_rest_endpoint = instantiate_ea_wp_aws_sns_client_rest_endpoint();
+$GLOBALS['ea_wp_aws_sns_client_rest_endpoint'] = $ea_wp_aws_sns_client_rest_endpoint = instantiate_ea_wp_aws_sns_client_rest_endpoint();
 $ea_wp_aws_sns_client_rest_endpoint->run();
+
+
+add_action( Cron::NOTIFY_IN_BACKGROUND_JOB_NAME, array( 'EA_WP_AWS_SNS_Client_REST_Endpoint_Cron', 'notify_in_background_static' ), 10, 4 );

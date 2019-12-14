@@ -12,6 +12,10 @@
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/admin
  */
 
+namespace EA_WP_AWS_SNS_Client_REST_Endpoint\cron;
+
+use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\EA_WP_AWS_SNS_Client_REST_Endpoint;
+
 /**
  * The cron-specific functionality of the plugin.
  *
@@ -21,7 +25,7 @@
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/cron
  * @author     Brian Henry <BrianHenryIE@gmail.com>
  */
-class EA_WP_AWS_SNS_Client_REST_Endpoint_Cron extends WPPB_Object {
+class Cron extends \WPPB_Object {
 
 	const NOTIFY_IN_BACKGROUND_JOB_NAME = 'ea_wp_aws_sns_client_rest_endpoint_notify_in_background';
 
@@ -39,26 +43,16 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint_Cron extends WPPB_Object {
 	public function notify_in_background( $topic_arn, $headers, $body, $message ) {
 
 		$handled = array();
-		$handled = apply_filters( EA_WP_AWS_SNS_Client_REST_Endpoint::NEW_NOTIFICATION_ACTION, $handled, $topic_arn, $headers, $body, $message );
 
-		if ( 0 === count( $handled ) ) {
-
-			$error_message = 'Notification for topic ' . $topic_arn . ' not handled.';
-
-			do_action(
-				'ea_log_notice',
-				$this->plugin_name,
-				$this->version,
-				$error_message,
-				array(
-					'subscription_topic' => $topic_arn,
-					'notification'       => $body,
-					'file'               => __FILE__,
-					'class'              => __CLASS__,
-					'function'           => __FUNCTION__,
-				)
-			);
-		}
+		apply_filters( EA_WP_AWS_SNS_Client_REST_Endpoint::NEW_NOTIFICATION_ACTION, $handled, $topic_arn, $headers, $body, $message );
 	}
+
+	public static function notify_in_background_static( $topic_arn, $headers, $body, $message ) {
+
+		$handled = array();
+
+		apply_filters( EA_WP_AWS_SNS_Client_REST_Endpoint::NEW_NOTIFICATION_ACTION, $handled, $topic_arn, $headers, $body, $message );
+	}
+
 
 }
