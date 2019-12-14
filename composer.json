@@ -10,7 +10,23 @@
         "10up/wp_mock": "0.4.2",
         "dealerdirect/phpcodesniffer-composer-installer": "*",
         "wp-coding-standards/wpcs": "*",
-        "phpunit/phpcov": "^5.0"
+        "phpunit/phpcov": "^5.0",
+        "kporras07/composer-symlinks": "dev-master"
+    },
+    "extra": {
+        "symlinks": {
+            "trunk": "wp-content/plugins/ea-wp-aws-sns-client-rest-endpoint",
+            "wp-content/plugins": "vendor/wordpress/wordpress/src/wp-content/plugins",
+            "vendor/wordpress/wordpress/src": "wordpress"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks"
+        ],
+        "post-update-cmd": [
+            "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks"
+        ]
     },
     "license": "GPL-2.0+-or-later",
     "authors": [
