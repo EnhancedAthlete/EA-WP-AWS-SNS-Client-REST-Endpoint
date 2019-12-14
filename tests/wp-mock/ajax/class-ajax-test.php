@@ -1,5 +1,6 @@
 <?php
 
+namespace EA_WP_AWS_SNS_Client_REST_Endpoint\ajax;
 
 class Ajax_Test extends \WP_Mock\Tools\TestCase {
 
@@ -18,26 +19,11 @@ class Ajax_Test extends \WP_Mock\Tools\TestCase {
 	private $plugin_version = '1.0.0';
 
 	/**
-	 * Configure test requirements.
-	 */
-	public function setUp(): void {
-
-		global $plugin_root_dir;
-
-		// Needed for the unit under test to access the consts.
-		require_once $plugin_root_dir . '/includes/class-ea-wp-aws-sns-client-rest-endpoint.php';
-
-		require_once $plugin_root_dir . '/ajax/class-ea-wp-aws-sns-client-rest-endpoint-ajax.php';
-
-		\WP_Mock::setUp();
-	}
-
-	/**
 	 * Straightforward successful test of pressing the confirm subscription button.
 	 */
 	public function test_confirm_subscription() {
 
-		$sut = new EA_WP_AWS_SNS_Client_REST_Endpoint_Ajax( $this->plugin_name, $this->plugin_version );
+		$sut = new Ajax( $this->plugin_name, $this->plugin_version );
 
 		$subscription_id = '12345';
 		$subscribe_url   = 'https://localhost/subscribe';
@@ -112,7 +98,7 @@ class Ajax_Test extends \WP_Mock\Tools\TestCase {
 	public function test_dismiss_subscription() {
 
 		// should delete any reference to the subscription.
-		$sut = new EA_WP_AWS_SNS_Client_REST_Endpoint_Ajax( $this->plugin_name, $this->plugin_version );
+		$sut = new Ajax( $this->plugin_name, $this->plugin_version );
 
 		$pending_subscriptions = array(
 			'qwerty' => array(),

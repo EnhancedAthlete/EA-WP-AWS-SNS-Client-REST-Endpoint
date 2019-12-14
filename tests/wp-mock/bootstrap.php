@@ -22,5 +22,7 @@ require_once $project_root_dir . '/vendor/autoload.php'; // Composer autoloader.
 
 $plugin_root_dir = $project_root_dir . '/trunk';
 
+require_once $plugin_root_dir . '/autoload.php';
+
 WP_Mock::bootstrap();
 

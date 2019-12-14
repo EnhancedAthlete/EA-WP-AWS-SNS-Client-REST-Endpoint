@@ -9,6 +9,8 @@
  * @author Brian Henry <BrianHenryIE@gmail.com>
  */
 
+namespace EA_WP_AWS_SNS_Client_REST_Endpoint\cron;
+
 /**
  * Class Cron_Test
  */
@@ -29,21 +31,6 @@ class Cron_Test extends \WP_Mock\Tools\TestCase {
 	private $plugin_version = '2.0.0';
 
 	/**
-	 * WP_Mock test setup method.
-	 */
-	public function setUp(): void {
-
-		global $plugin_root_dir;
-
-		// Needed for the unit under test to access the consts.
-		require_once $plugin_root_dir . '/includes/class-ea-wp-aws-sns-client-rest-endpoint.php';
-
-		require_once $plugin_root_dir . '/cron/class-ea-wp-aws-sns-client-rest-endpoint-cron.php';
-
-		\WP_Mock::setUp();
-	}
-
-	/**
 	 * Fire the action which passes data to other plugins in the background.
 	 *
 	 * The only purpose of the cron class is to fire the action in the background. It shouldn't matter
@@ -59,7 +46,7 @@ class Cron_Test extends \WP_Mock\Tools\TestCase {
 		$body      = json_decode( '"body": "body"' );
 		$message   = json_decode( '"message": "message"' );
 
-		$sut = new EA_WP_AWS_SNS_Client_REST_Endpoint_Cron( $this->plugin_name, $this->plugin_version );
+		$sut = new Cron( $this->plugin_name, $this->plugin_version );
 
 		\WP_Mock::expectFilter( 'ea_aws_sns_notification', $handled, $topic_arn, $headers, $body, $message );
 

@@ -1,5 +1,6 @@
 <?php
 
+namespace EA_WP_AWS_SNS_Client_REST_Endpoint\admin;
 
 class Admin_Test extends \WP_Mock\Tools\TestCase {
 
@@ -16,18 +17,6 @@ class Admin_Test extends \WP_Mock\Tools\TestCase {
 	 * @var string Plugin version.
 	 */
 	private $plugin_version = '1.0.0';
-
-	public function setUp(): void {
-
-		global $plugin_root_dir;
-
-		// Needed for the unit under test to access the consts.
-		require_once $plugin_root_dir . '/includes/class-ea-wp-aws-sns-client-rest-endpoint.php';
-
-		require_once $plugin_root_dir . '/admin/class-ea-wp-aws-sns-client-rest-endpoint-admin.php';
-
-		\WP_Mock::setUp();
-	}
 
 
 	// $subscription_confirmation = array(
@@ -47,7 +36,7 @@ class Admin_Test extends \WP_Mock\Tools\TestCase {
 	 */
 	public function test_display_pending_subscriptions() {
 
-		$sut = new EA_WP_AWS_SNS_Client_REST_Endpoint_Admin( $this->plugin_name, $this->plugin_version );
+		$sut = new Admin( $this->plugin_name, $this->plugin_version );
 
 		$pending_subscriptions = array(
 			'88685c78-1e4b-4aab-be1c-5aa353b575dd' => array(
@@ -73,7 +62,7 @@ class Admin_Test extends \WP_Mock\Tools\TestCase {
 		$_SERVER['REQUEST_URI'] = '/wp-admin/plugins.php?plugin_status=all&paged=1&s';
 
 		global $wp;
-		$wp             = new stdClass();
+		$wp             = new \stdClass();
 		$wp->query_vars = 'wp-admin/plugins.php?plugin_status=all&paged=1&s';
 		$wp->request    = '';
 

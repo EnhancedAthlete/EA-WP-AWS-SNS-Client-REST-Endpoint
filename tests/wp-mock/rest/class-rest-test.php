@@ -1,5 +1,7 @@
 <?php
 
+namespace EA_WP_AWS_SNS_Client_REST_Endpoint\rest;
+
 /**
  * Class Rest_Test
  *
@@ -21,26 +23,12 @@ class Rest_Test extends \WP_Mock\Tools\TestCase {
 	 */
 	private $plugin_version = '1.0.0';
 
-
-	public function setUp(): void {
-
-		global $plugin_root_dir;
-
-		// Needed for the unit under test to access the consts.
-		require_once $plugin_root_dir . '/includes/class-ea-wp-aws-sns-client-rest-endpoint.php';
-
-		require_once $plugin_root_dir . '/rest/class-ea-wp-aws-sns-client-rest-endpoint-rest.php';
-
-		\WP_Mock::setUp();
-	}
-
-
 	/**
 	 * The new subscription should be added to the list of pending subscriptions. (which are later displayed in wp-admin)
 	 */
 	public function test_handle_subscription_confirmation_request() {
 
-		$sut = new EA_WP_AWS_SNS_Client_REST_Endpoint_REST( $this->plugin_name, $this->plugin_version );
+		$sut = new REST( $this->plugin_name, $this->plugin_version );
 
 		global $project_root_dir;
 
@@ -83,7 +71,7 @@ class Rest_Test extends \WP_Mock\Tools\TestCase {
 
 	public function test_handle_notification() {
 
-		$sut = new EA_WP_AWS_SNS_Client_REST_Endpoint_REST( $this->plugin_name, $this->plugin_version );
+		$sut = new REST( $this->plugin_name, $this->plugin_version );
 
 		global $project_root_dir;
 
