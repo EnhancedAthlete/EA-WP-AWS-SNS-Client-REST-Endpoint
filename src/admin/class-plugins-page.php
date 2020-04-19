@@ -85,5 +85,32 @@ class Plugins_Page extends WPPB_Object {
 		return $plugin_meta;
 	}
 
+	/**
+	 * Edit the plugin's description so the REST endpoint is easy to find and copy.
+	 *
+	 * @hooked all_plugins
+	 * @since 2.2.0
+	 * @param array[] $all_plugins Associative array of plugin-slug: plugin data.
+	 *
+	 * @return array
+	 */
+	public function add_rest_url_to_description( $all_plugins ) {
+
+		$plugin_file_name = $this->get_plugin_name() . '/' . $this->get_plugin_name() . '.php';
+
+		if ( isset( $all_plugins[ $plugin_file_name ] ) ) {
+
+			// The description as read from the base plugin file.
+			$description = $all_plugins[ $plugin_file_name ]['Description'];
+
+			$description .= ' Use endpoint: <em>' . get_rest_url( null, 'ea/v1/aws-sns/' ) . '</em>';
+
+			$all_plugins[ $plugin_file_name ]['Description'] = $description;
+
+		}
+
+		return $all_plugins;
+
+	}
 
 }
