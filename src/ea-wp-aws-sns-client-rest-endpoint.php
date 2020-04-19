@@ -8,10 +8,10 @@
  * @package           EA_WP_AWS_SNS_Client_REST_Endpoint
  *
  * @wordpress-plugin
- * Plugin Name:       EA WP AWS SNS – Client REST Endpoint
+ * Plugin Name:       AWS SNS Client REST Endpoint
  * Plugin URI:        https://github.com/EnhancedAthlete/ea-wp-aws-sns-client-rest-endpoint
  * Description:       Receives messages from Amazon Web Services Simple Notification Service for other plugins.
- * Version:           2.0.0
+ * Version:           2.2.0
  * Author:            BrianHenryIE
  * Author URI:        https://BrianHenry.ie
  * License:           GPL-2.0+
