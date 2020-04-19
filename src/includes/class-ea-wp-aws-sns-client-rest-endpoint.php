@@ -16,6 +16,7 @@ namespace EA_WP_AWS_SNS_Client_REST_Endpoint\includes;
 
 use EA_WP_AWS_SNS_Client_REST_Endpoint\admin\Admin;
 use EA_WP_AWS_SNS_Client_REST_Endpoint\admin\Ajax;
+use EA_WP_AWS_SNS_Client_REST_Endpoint\admin\Plugins_Page;
 use EA_WP_AWS_SNS_Client_REST_Endpoint\rest\REST;
 use EA_WP_AWS_SNS_Client_REST_Endpoint\WPPB\WPPB_Loader_Interface;
 use EA_WP_AWS_SNS_Client_REST_Endpoint\WPPB\WPPB_Object;
@@ -58,6 +59,14 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint extends WPPB_Object {
 	 * @var Cron
 	 */
 	public $cron;
+	/**
+	 * @var Admin
+	 */
+	public $admin;
+	/**
+	 * @var Plugins_Page
+	 */
+	public $plugins_page;
 
 	/**
 	 * Define the core functionality of the plugin.
@@ -83,8 +92,6 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint extends WPPB_Object {
 		$this->loader = $loader;
 
 		$this->define_admin_hooks();
-		$this->define_ajax_hooks();
-
 		$this->define_rest_hooks();
 		$this->define_cron_hooks();
 
@@ -99,25 +106,18 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint extends WPPB_Object {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Admin( $this->get_plugin_name(), $this->get_version() );
+		$this->admin = new Admin( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $this->admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_notices', $this->admin, 'admin_notices' );
 
-		$this->loader->add_action( 'admin_notices', $plugin_admin, 'admin_notices' );
+		$this->plugins_page = new Plugins_Page( $this->get_plugin_name(), $this->get_version() );
+		
+		$this->loader->add_filter( 'plugin_action_links', $this->plugins_page, 'plugin_action_links', 20, 2 );
+		$this->loader->add_filter( 'plugin_row_meta', $this->plugins_page, 'plugin_row_meta', 20, 4 );
+		$this->loader->add_filter( 'all_plugins', $this->plugins_page, 'add_rest_url_to_description', 20, 1 );
 
-		$this->loader->add_filter( 'plugin_action_links', $plugin_admin, 'plugin_action_links', 20, 2 );
-		$this->loader->add_filter( 'plugin_row_meta', $plugin_admin, 'plugin_row_meta', 20, 4 );
-	}
-
-	/**
-	 * Register all of the hooks related to the ajax functionality
-	 * of the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function define_ajax_hooks() {
-
+		
 		$plugin_ajax = new Ajax( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_ajax_ea_aws_sns_confirm_subscription', $plugin_ajax, 'ajax_confirm_subscription' );
