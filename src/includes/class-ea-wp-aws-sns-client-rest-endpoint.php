@@ -59,11 +59,17 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint extends WPPB_Object {
 	 * @var Cron
 	 */
 	public $cron;
+
 	/**
+	 * The Admin hooks, public for others to manipulate.
+	 *
 	 * @var Admin
 	 */
 	public $admin;
+
 	/**
+	 * The plugins page object, available for whatever one might want it for.
+	 *
 	 * @var Plugins_Page
 	 */
 	public $plugins_page;
@@ -112,12 +118,11 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint extends WPPB_Object {
 		$this->loader->add_action( 'admin_notices', $this->admin, 'admin_notices' );
 
 		$this->plugins_page = new Plugins_Page( $this->get_plugin_name(), $this->get_version() );
-		
+
 		$this->loader->add_filter( 'plugin_action_links', $this->plugins_page, 'plugin_action_links', 20, 2 );
 		$this->loader->add_filter( 'plugin_row_meta', $this->plugins_page, 'plugin_row_meta', 20, 4 );
 		$this->loader->add_filter( 'all_plugins', $this->plugins_page, 'add_rest_url_to_description', 20, 1 );
 
-		
 		$plugin_ajax = new Ajax( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_ajax_ea_aws_sns_confirm_subscription', $plugin_ajax, 'ajax_confirm_subscription' );

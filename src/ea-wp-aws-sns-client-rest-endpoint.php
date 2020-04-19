@@ -22,7 +22,7 @@
 
 namespace EA_WP_AWS_SNS_Client_REST_Endpoint;
 
-// If this file is called directly, abort.
+use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\Deactivator;
 use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\EA_WP_AWS_SNS_Client_REST_Endpoint;
 use EA_WP_AWS_SNS_Client_REST_Endpoint\WPPB\WPPB_Loader;
 
