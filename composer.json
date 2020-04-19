@@ -3,29 +3,85 @@
         {
             "url": "https://github.com/WordPress/wordpress-develop",
             "type": "git"
+        },
+        {
+            "url": "https://github.com/BrianHenryIE/WPPB-lib",
+            "type": "git"
+        },
+        {
+            "url": "https://github.com/pablo-sg-pacheco/wp-namespace-autoloader",
+            "type": "git"
+        },
+        {
+            "url": "https://github.com/BrianHenryIE/composer-phpstorm",
+            "type": "git"
         }
     ],
+    "require": {
+        "brianhenryie/wppb-lib": "dev-master",
+        "pablo-sg-pacheco/wp-namespace-autoloader": "dev-master"
+    },
     "require-dev": {
         "wordpress/wordpress": "dev-master",
-        "10up/wp_mock": "0.4.2",
+        "10up/wp_mock": "0.4.0",
         "dealerdirect/phpcodesniffer-composer-installer": "*",
         "wp-coding-standards/wpcs": "*",
         "phpunit/phpcov": "^5.0",
-        "kporras07/composer-symlinks": "dev-master"
+        "kporras07/composer-symlinks": "dev-master",
+        "brianhenryie/composer-phpstorm": "dev-master",
+        "cweagans/composer-patches": "~1.0",
+        "coenjacobs/mozart": "0.5.1",
+        "phpunit/phpunit"     : ">=7.5",
+        "phpcompatibility/phpcompatibility-wp": "*"
     },
     "extra": {
+        "patches": {
+            "coenjacobs/mozart": {
+                "Allow default packages" : "https://github.com/coenjacobs/mozart/pull/34.patch",
+                "Add config option to disable deleting vendor directories": "https://github.com/coenjacobs/mozart/pull/38.patch"
+            }
+        },
+        "mozart": {
+            "dep_namespace": "EA_WP_AWS_SNS_Client_REST_Endpoint\\",
+            "dep_directory": "/src/vendor/",
+            "classmap_directory": "/src/dependencies/",
+            "classmap_prefix": "EA_WP_AWS_SNS_Client_REST_Endpoint_",
+            "delete_vendor_directories": false
+        },
         "symlinks": {
-            "trunk": "wp-content/plugins/ea-wp-aws-sns-client-rest-endpoint",
+            "src": "wp-content/plugins/ea-wp-aws-sns-client-rest-endpoint",
             "wp-content/plugins": "vendor/wordpress/wordpress/src/wp-content/plugins",
             "vendor/wordpress/wordpress/src": "wordpress"
+        },
+        "phpstorm": {
+            "exclude_folders": {
+                "folders": [
+                    "vendor/wordpress/wordpress/src",
+                    "vendor/wordpress/wordpress/build",
+                    "wordpress/wp-content/plugins",
+                    "wp-content/plugins/ea-wp-aws-sns-client-rest-endpoint"
+                ],
+                "include_folders": [
+                    "vendor/wordpress/wordpress/"
+                ],
+                "composer-symlinks": false
+            }
         }
     },
     "scripts": {
         "post-install-cmd": [
-            "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks"
+            "\"vendor/bin/mozart\" compose",
+            "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
+            "mkdir -p vendor/wordpress/wordpress/src/wp-content/uploads",
+            "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
+            "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update"
         ],
         "post-update-cmd": [
-            "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks"
+            "\"vendor/bin/mozart\" compose",
+            "Kporras07\\ComposerSymlinks\\ScriptHandler::createSymlinks",
+            "mkdir -p vendor/wordpress/wordpress/src/wp-content/uploads",
+            "BrianHenryIE\\ComposerPhpStorm\\ExcludeFolders::update",
+            "BrianHenryIE\\ComposerPhpStorm\\PHPUnitRunConfigurations::update"
         ]
     },
     "license": "GPL-2.0+-or-later",

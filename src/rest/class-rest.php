@@ -14,6 +14,7 @@
 namespace EA_WP_AWS_SNS_Client_REST_Endpoint\rest;
 
 use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\EA_WP_AWS_SNS_Client_REST_Endpoint;
+use EA_WP_AWS_SNS_Client_REST_Endpoint\WPPB\WPPB_Object;
 
 /**
  * The REST API functionality of the plugin.
@@ -24,7 +25,7 @@ use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\EA_WP_AWS_SNS_Client_REST_Endpoi
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/rest
  * @author     Brian Henry <BrianHenryIE@gmail.com>
  */
-class REST extends \WPPB_Object {
+class REST extends WPPB_Object {
 
 	/**
 	 * Defines the REST endpoint itself. Added on WordPress `rest_api_init` action.

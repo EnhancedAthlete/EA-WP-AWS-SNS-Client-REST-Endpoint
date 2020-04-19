@@ -23,8 +23,8 @@
 namespace EA_WP_AWS_SNS_Client_REST_Endpoint;
 
 // If this file is called directly, abort.
-use EA_WP_AWS_SNS_Client_REST_Endpoint\cron\Cron;
 use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\EA_WP_AWS_SNS_Client_REST_Endpoint;
+use EA_WP_AWS_SNS_Client_REST_Endpoint\WPPB\WPPB_Loader;
 
 if ( ! defined( 'WPINC' ) ) {
 	die;
@@ -54,7 +54,7 @@ register_deactivation_hook( __FILE__, 'deactivate_ea_wp_aws_sns_client_rest_endp
  */
 function instantiate_ea_wp_aws_sns_client_rest_endpoint() {
 
-	$loader = new \WPPB_Loader();
+	$loader = new WPPB_Loader();
 
 	$ea_wp_aws_sns_client_rest_endpoint = new EA_WP_AWS_SNS_Client_REST_Endpoint( $loader );
 
@@ -74,6 +74,3 @@ function instantiate_ea_wp_aws_sns_client_rest_endpoint() {
  */
 $GLOBALS['ea_wp_aws_sns_client_rest_endpoint'] = $ea_wp_aws_sns_client_rest_endpoint = instantiate_ea_wp_aws_sns_client_rest_endpoint();
 $ea_wp_aws_sns_client_rest_endpoint->run();
-
-
-add_action( Cron::NOTIFY_IN_BACKGROUND_JOB_NAME, array( 'EA_WP_AWS_SNS_Client_REST_Endpoint_Cron', 'notify_in_background_static' ), 10, 4 );

@@ -14,6 +14,8 @@ Adds a REST endpoint to WordPress for receiving AWS SNS messages; fires `do_acti
 
 https://aws.amazon.com/sns/
 
+https://github.com/EnhancedAthlete/ea-wp-aws-sns-client-rest-endpoint
+
 == Installation ==
 
 1. Upload `ea-wp-aws-sns-client-rest-endpoint.php` to the `/wp-content/plugins/` directory
@@ -50,6 +52,11 @@ function my_notification_handler( $handled $notification_topic_arn, $headers, $b
 ```
 
 == Changelog ==
+
+= 2.0.1 =
+
+Use Mozart for namespacing dependencies.
+Code reorganised.
 
 = 2.0.0 =
 

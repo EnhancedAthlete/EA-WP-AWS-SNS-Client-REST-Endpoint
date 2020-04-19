@@ -12,15 +12,15 @@
     </testsuites>
     <filter>
         <whitelist>
-            <directory suffix=".php">../../trunk/</directory>
+            <directory suffix=".php">../../src/</directory>
             <exclude>
-                <directory suffix=".php">../../trunk/lib/</directory>
-                <directory>../../trunk/lib/</directory>
-                <file>../../trunk/index.php</file>
-                <file>../../trunk/admin/index.php</file>
-                <file>../../trunk/cron/index.php</file>
-                <file>../../trunk/includes/index.php</file>
-                <file>../../trunk/rest/index.php</file>
+                <directory suffix=".php">../../src/lib/</directory>
+                <directory>../../src/lib/</directory>
+                <file>../../src/index.php</file>
+                <file>../../src/admin/index.php</file>
+                <file>../../src/cron/index.php</file>
+                <file>../../src/includes/index.php</file>
+                <file>../../src/rest/index.php</file>
             </exclude>
         </whitelist>
     </filter>

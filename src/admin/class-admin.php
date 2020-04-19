@@ -12,6 +12,7 @@
 namespace EA_WP_AWS_SNS_Client_REST_Endpoint\admin;
 
 use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\EA_WP_AWS_SNS_Client_REST_Endpoint;
+use EA_WP_AWS_SNS_Client_REST_Endpoint\WPPB\WPPB_Object;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -23,7 +24,7 @@ use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\EA_WP_AWS_SNS_Client_REST_Endpoi
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/admin
  * @author     Brian Henry <BrianHenryIE@gmail.com>
  */
-class Admin extends \WPPB_Object {
+class Admin extends WPPB_Object {
 
 	/**
 	 * Register the JavaScript for the admin area.

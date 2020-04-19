@@ -1,2 +1,12 @@
 .idea
-vendor
+*.phar
+scratch*
+.DS_Store
+vendor/*
+releases
+wp-content
+*.zip
+
+wordpress
+src/vendor/
+src/dependencies/

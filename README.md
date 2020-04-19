@@ -1,5 +1,5 @@
 
-[![WordPress tested 5.2](https://img.shields.io/badge/WordPress-v5.2%20tested-0073aa.svg)](https://wordpress.org/) [![PHPCS WPCS](https://img.shields.io/badge/PHPCS-WordPress%20Coding%20Standards-8892BF.svg)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards) [![License: GPL v2 or later](https://img.shields.io/badge/License-GPL%20v2%20or%20later-bd0000.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) [![PHPUnit ](https://img.shields.io/badge/PHPUnit-32%25%20coverage-dc3545.svg)]()
+[![WordPress tested 5.4](https://img.shields.io/badge/WordPress-v5.4%20tested-0073aa.svg)](https://wordpress.org/) [![PHPCS WPCS](https://img.shields.io/badge/PHPCS-WordPress%20Coding%20Standards-8892BF.svg)](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards) [![License: GPL v2 or later](https://img.shields.io/badge/License-GPL%20v2%20or%20later-bd0000.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) [![PHPUnit ](https://img.shields.io/badge/PHPUnit-31%25%20coverage-dc3545.svg)]()
 
 # EA WP AWS SNS - Client REST Endpoint
 
@@ -7,9 +7,9 @@ A [WordPress](https://wordpress.org/) plugin providing a REST API endpoint to re
 
 ## Purpose
 
-We are using [AWS Transcribe](https://aws.amazon.com/transcribe/) to transcribe videos on [AnabolicTV.com](https://anabolictv.com) and when it completes, AWS SNS communicates to our WordPress instance that the job is finished so we can retrieve the output.
+We send emails from WordPress via [AWS SES](https://aws.amazon.com/ses/) (using [WP SES plugin](https://wordpress.org/plugins/wp-ses/)). A sister plugin of this, [EA WP AWS SES Bounce Handler](https://github.com/EnhancedAthlete/EA-WP-AWS-SES-Bounce-Handler) uses this plugin to receive the notifications before processing them itself.
 
-If emails from WordPress are sent via [AWS SES](https://aws.amazon.com/ses/) (using [WP SES plugin](https://wordpress.org/plugins/wp-ses/)) a plugin to delete accounts whose email addresses bounce could use this plugin to receive the notifications.
+We are using [AWS Transcribe](https://aws.amazon.com/transcribe/) to transcribe videos on [AnabolicTV.com](https://anabolictv.com) and when it completes, AWS SNS communicates to our WordPress instance that the job is finished so we can retrieve the output.
 
 ## How To Use
 

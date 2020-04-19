@@ -15,9 +15,10 @@
 namespace EA_WP_AWS_SNS_Client_REST_Endpoint\includes;
 
 use EA_WP_AWS_SNS_Client_REST_Endpoint\admin\Admin;
-use EA_WP_AWS_SNS_Client_REST_Endpoint\ajax\Ajax;
-use EA_WP_AWS_SNS_Client_REST_Endpoint\cron\Cron;
+use EA_WP_AWS_SNS_Client_REST_Endpoint\admin\Ajax;
 use EA_WP_AWS_SNS_Client_REST_Endpoint\rest\REST;
+use EA_WP_AWS_SNS_Client_REST_Endpoint\WPPB\WPPB_Loader_Interface;
+use EA_WP_AWS_SNS_Client_REST_Endpoint\WPPB\WPPB_Object;
 
 /**
  * The core plugin class.
@@ -33,7 +34,7 @@ use EA_WP_AWS_SNS_Client_REST_Endpoint\rest\REST;
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/includes
  * @author     Brian Henry <BrianHenryIE@gmail.com>
  */
-class EA_WP_AWS_SNS_Client_REST_Endpoint {
+class EA_WP_AWS_SNS_Client_REST_Endpoint extends WPPB_Object {
 
 	/**
 	 * The WordPress Plugin Boilerplate loader that's responsible for maintaining and
@@ -41,27 +42,9 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var     \WPPB_Loader_Interface    $loader    Maintains and registers all hooks for the plugin.
+	 * @var     WPPB_Loader_Interface    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
-
-	/**
-	 * The unique identifier of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
-	 */
-	protected $plugin_name;
-
-	/**
-	 * The current version of the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
-	 */
-	protected $version;
 
 	const PENDING_SUBSCRIPTIONS_OPTION_KEY = 'ea-wp-aws-sns-client-rest-endpoint-pending-subscriptions';
 
@@ -69,6 +52,11 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 
 	const NEW_NOTIFICATION_ACTION = 'ea_aws_sns_notification';
 
+	/**
+	 * The Cron object so other plugins can access it for unhooking.
+	 *
+	 * @var Cron
+	 */
 	public $cron;
 
 	/**
@@ -80,15 +68,17 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 	 *
 	 * @since    1.0.0
 	 *
-	 * @param \WPPB_Loader_Interface $loader The WordPress Plugin Boilerplate loader object.
+	 * @param WPPB_Loader_Interface $loader The WordPress Plugin Boilerplate loader object.
 	 */
 	public function __construct( $loader ) {
 		if ( defined( 'EA_WP_AWS_SNS_CLIENT_REST_ENDPOINT_VERSION' ) ) {
-			$this->version = EA_WP_AWS_SNS_CLIENT_REST_ENDPOINT_VERSION;
+			$version = EA_WP_AWS_SNS_CLIENT_REST_ENDPOINT_VERSION;
 		} else {
-			$this->version = '2.0.0';
+			$version = '2.0.1';
 		}
-		$this->plugin_name = 'ea-wp-aws-sns-client-rest-endpoint';
+		$plugin_name = 'ea-wp-aws-sns-client-rest-endpoint';
+
+		parent::__construct( $plugin_name, $version );
 
 		$this->loader = $loader;
 
@@ -157,9 +147,9 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 	 */
 	private function define_cron_hooks() {
 
-		$this->cron = $plugin_cron = new Cron( $this->get_plugin_name(), $this->get_version() );
+		$this->cron = new Cron( $this->get_plugin_name(), $this->get_version() );
 
-		// $this->loader->add_action( EA_WP_AWS_SNS_Client_REST_Endpoint_Cron::NOTIFY_IN_BACKGROUND_JOB_NAME, $plugin_cron, 'notify_in_background', 10, 4 );
+		$this->loader->add_action( Cron::NOTIFY_IN_BACKGROUND_JOB_NAME, $this->cron, 'notify_in_background', 10, 4 );
 	}
 
 	/**
@@ -172,34 +162,13 @@ class EA_WP_AWS_SNS_Client_REST_Endpoint {
 	}
 
 	/**
-	 * The name of the plugin used to uniquely identify it within the context of
-	 * WordPress and to define internationalization functionality.
-	 *
-	 * @since     1.0.0
-	 * @return    string    The name of the plugin.
-	 */
-	public function get_plugin_name() {
-		return $this->plugin_name;
-	}
-
-	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     1.0.0
-	 * @return    \WPPB_Loader_Interface    Orchestrates the hooks of the plugin.
+	 * @return    WPPB_Loader_Interface    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;
-	}
-
-	/**
-	 * Retrieve the version number of the plugin.
-	 *
-	 * @since     1.0.0
-	 * @return    string    The version number of the plugin.
-	 */
-	public function get_version() {
-		return $this->version;
 	}
 
 }

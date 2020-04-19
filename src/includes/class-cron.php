@@ -12,9 +12,9 @@
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/admin
  */
 
-namespace EA_WP_AWS_SNS_Client_REST_Endpoint\cron;
+namespace EA_WP_AWS_SNS_Client_REST_Endpoint\includes;
 
-use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\EA_WP_AWS_SNS_Client_REST_Endpoint;
+use EA_WP_AWS_SNS_Client_REST_Endpoint\WPPB\WPPB_Object;
 
 /**
  * The cron-specific functionality of the plugin.
@@ -25,14 +25,14 @@ use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\EA_WP_AWS_SNS_Client_REST_Endpoi
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/cron
  * @author     Brian Henry <BrianHenryIE@gmail.com>
  */
-class Cron extends \WPPB_Object {
+class Cron extends WPPB_Object {
 
 	const NOTIFY_IN_BACKGROUND_JOB_NAME = 'ea_wp_aws_sns_client_rest_endpoint_notify_in_background';
 
 	/**
 	 * This method is hooked to an action so WordPress's cron system can be used to process the notification
 	 * in the background.
-	 * If fires the action `ea_aws_sns_notification` with the notification data and other plugins are expected
+	 * It fires the action `ea_aws_sns_notification` with the notification data and other plugins are expected
 	 * to listen for this action.
 	 *
 	 * @param string $topic_arn The AWS SNS topic Amazon Resource Name.
@@ -46,13 +46,5 @@ class Cron extends \WPPB_Object {
 
 		apply_filters( EA_WP_AWS_SNS_Client_REST_Endpoint::NEW_NOTIFICATION_ACTION, $handled, $topic_arn, $headers, $body, $message );
 	}
-
-	public static function notify_in_background_static( $topic_arn, $headers, $body, $message ) {
-
-		$handled = array();
-
-		apply_filters( EA_WP_AWS_SNS_Client_REST_Endpoint::NEW_NOTIFICATION_ACTION, $handled, $topic_arn, $headers, $body, $message );
-	}
-
 
 }

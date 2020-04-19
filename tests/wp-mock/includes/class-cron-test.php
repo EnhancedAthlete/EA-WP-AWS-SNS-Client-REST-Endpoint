@@ -9,7 +9,7 @@
  * @author Brian Henry <BrianHenryIE@gmail.com>
  */
 
-namespace EA_WP_AWS_SNS_Client_REST_Endpoint\cron;
+namespace EA_WP_AWS_SNS_Client_REST_Endpoint\includes;
 
 /**
  * Class Cron_Test

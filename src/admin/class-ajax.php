@@ -9,9 +9,10 @@
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/ajax
  */
 
-namespace EA_WP_AWS_SNS_Client_REST_Endpoint\ajax;
+namespace EA_WP_AWS_SNS_Client_REST_Endpoint\admin;
 
 use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\EA_WP_AWS_SNS_Client_REST_Endpoint;
+use EA_WP_AWS_SNS_Client_REST_Endpoint\WPPB\WPPB_Object;
 
 /**
  * The ajax-specific functionality of the plugin.
@@ -22,7 +23,7 @@ use EA_WP_AWS_SNS_Client_REST_Endpoint\includes\EA_WP_AWS_SNS_Client_REST_Endpoi
  * @subpackage EA_WP_AWS_SNS_Client_REST_Endpoint/ajax
  * @author     Brian Henry <BrianHenryIE@gmail.com>
  */
-class Ajax extends \WPPB_Object {
+class Ajax extends WPPB_Object {
 
 
 	/**

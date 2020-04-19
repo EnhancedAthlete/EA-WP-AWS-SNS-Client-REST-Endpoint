@@ -1,6 +1,6 @@
 <?php
 
-namespace EA_WP_AWS_SNS_Client_REST_Endpoint\ajax;
+namespace EA_WP_AWS_SNS_Client_REST_Endpoint\admin;
 
 class Ajax_Test extends \WP_Mock\Tools\TestCase {
 
